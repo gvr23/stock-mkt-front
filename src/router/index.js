@@ -26,6 +26,12 @@ class RouterApp extends React.Component {
                     component={() => <Home />}
                     exact
                 />
+                <Route
+                    path={"/b"}
+
+                    component={() => <Home />}
+                    exact
+                />
             </Switch>
         </Layout >)
     }
