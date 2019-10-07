@@ -1,11 +1,13 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
 import { setStocks } from '../../actions'
 import { stocksSelector } from '../../selectors';
+import Button from '../../components/Button';
+import Icon from '../../components/Icon';
 
-class Home extends PureComponent {
+class Home extends Component {
     constructor(props) {
         super(props)
 
@@ -44,22 +46,43 @@ class Home extends PureComponent {
 
     }
 
-    renderStocks() {
-        const { stockList } = this.props
+    componentWillReceiveProps(nexProps) {
+        console.log({ nexProps })
+    }
+
+    renderStocks(stockList) {
         return Object.keys(stockList).map((stockKey) => {
-            const stock = stockList[stockKey]
+            // const stock = stockList[stockKey]
             return <div className="_stock" key={stockKey}>
                 <div
                     className="left"
                 >
                     <AdaptableImg
-                        src={stock.companylogo}
+                        src={stockList[stockKey].companylogo}
                     />
                 </div>
                 <div
                     className="right"
                 >
+                    <small><b>{stockList[stockKey]["name"]}</b></small>
+                    <small>{stockList[stockKey]["price"]} (verde rojo)</small>
+                    <small>{stockList[stockKey]["change"]}(flecha verde roja)</small>
+                    <div
+                        className="btns"
+                    >
+                        <Button
+                            text={<Icon name="chart-line" />}
+                            className="is-primary is-small"
+                            style={{
+                                marginRight: 10
+                            }}
+                        />
+                        <Button
+                            className="is-success is-small"
+                            text="Comprar"
+                        />
 
+                    </div>
                 </div>
             </div>
         })
@@ -76,7 +99,7 @@ class Home extends PureComponent {
 
             <div
                 style={{
-                    flex: '1 1',
+                    flex: '1.25 1',
                     display: 'flex',
                     border: 'solid 1px #000000',
                     flexDirection: 'column',
@@ -85,11 +108,7 @@ class Home extends PureComponent {
                     overflowX: 'scroll'
                 }}
             >
-                {this.renderStocks()}
-                {this.renderStocks()}
-                {this.renderStocks()}
-                {this.renderStocks()}
-                {this.renderStocks()}
+                {this.renderStocks(this.props.stockList)}
             </div>
             <div
                 style={{
@@ -104,9 +123,10 @@ class Home extends PureComponent {
 }
 
 const mapStateToProps = state => {
-    const stockList = stocksSelector(state)
+    const { stockList } = state.stocks
+    console.log({ stockList })
     return {
-        stockList
+        stockList: stockList
     }
 }
 

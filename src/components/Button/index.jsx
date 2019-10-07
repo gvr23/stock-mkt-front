@@ -38,5 +38,6 @@ Button.propTypes = {
     /** determines if button is disabled or not */
     disabled: PropTypes.bool,
     /** text to show in button */
-    text: PropTypes.string
+    text: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+
 }

@@ -9,13 +9,15 @@ import { connect } from 'react-redux';
 import {
     withRouter
 } from 'react-router-dom';
-import { } from '../actions';
+import {
+    updatePrice
+} from '../actions';
 import { push } from 'connected-react-router';
 import {
     Home,
     Login
 } from './asyncRoutes';
-import { appSelector, isLoggedSelector } from '../selectors';
+import { isLoggedSelector } from '../selectors';
 
 class RouterApp extends React.Component {
     componentDidMount() {
@@ -27,6 +29,7 @@ class RouterApp extends React.Component {
         })
         socket.on('new.stock.value', (data) => {
             console.log({ data })
+            this.props.updatePrice(data)
         })
     }
     render() {
@@ -151,5 +154,6 @@ const mapStateToProps = (state) => {
 }
 
 export default (connect(mapStateToProps, {
-    push
+    push,
+    updatePrice
 })(RouterApp))
