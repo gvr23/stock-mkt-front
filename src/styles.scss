@@ -1,1 +1,39 @@
-@import "bulma"
+$primary: #1b2e90;
+// $beige-lighter: #f9f9f9;
+$beige-lighter: #eff0eb;
+$beige-light: #d0d1cd;
+$body-family: "Montserrat";
+$purple: #8a4d76;
+$pink: #fa7c91;
+$brown: #757763;
+
+$body-color: #000;
+
+$body-background-color: #fff;
+
+$family-primary: "Montserrat";
+$family-secondary: "Montserrat";
+$body-family: "Montserrat";
+
+@import "~bulma";
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,900&display=swap");
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+@import "./components/Input/Input.scss";
+@import "./components/Icon/Icon.scss";
+@import "./components/Button/Button.scss";
+@import "./components/AdaptableImg/AdaptableImg.scss";
+
+@import "./containers/Login/Login.scss";
+@import "./containers/Home/Home.scss";
+
+// @import "~bulma/sass/utilities/_all.sass";
+// @import "~bulma/sass/base/_all.sass";
+@import "~bulma/sass/elements/button.sass";
+@import "~bulma/sass/form/_all.sass";
+// @import "~bulma/sass/form/input-textarea.sass";

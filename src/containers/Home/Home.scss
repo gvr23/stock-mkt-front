@@ -1,0 +1,28 @@
+._stock {
+  width: 300px;
+  height: 125px;
+  cursor: pointer;
+  // overflow: hidden;
+  margin: 10px;
+  // border: solid 1px black;
+  box-shadow: 1.5px 1.5px 4px 1px $brown;
+  border-radius: 3px;
+  display: flex;
+
+  .left {
+    flex: 1;
+    // box-shadow: 0px 0px 0px 2px #000;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    display: flex;
+  }
+  .right {
+    flex: 1.75;
+    // box-shadow: 0px 0px 0px 2px #000;
+  }
+  transition: all 0.25s ease;
+  &:hover {
+    transform: scale(1.025);
+  }
+}

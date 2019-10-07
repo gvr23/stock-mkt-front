@@ -11,3 +11,8 @@ export const Home = Loadable(
         loader: () => import(/* webpackChunkName: "home" */'../containers/Home')
     })
 )
+export const Login = Loadable(
+    withLoader({
+        loader: () => import(/* webpackChunkName: "login" */'../containers/Login')
+    })
+)

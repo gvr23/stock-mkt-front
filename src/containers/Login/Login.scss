@@ -1,0 +1,25 @@
+._login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  ._login_form {
+    position: relative;
+    background: $beige-lighter;
+    @include mobile {
+      width: 95vw;
+    }
+    @include desktop {
+      width: 40vw;
+      height: 50vh;
+      padding: 20px 5rem 5rem 5rem;
+      box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+  }
+}

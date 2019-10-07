@@ -12,8 +12,8 @@ import { composeWithDevTools } from "redux-devtools-extension";
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: [
-        "router"
+    whitelist: [
+        'app'
     ]
 }
 export const history = createBrowserHistory();

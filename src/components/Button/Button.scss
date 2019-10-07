@@ -1,0 +1,10 @@
+.button {
+  justify-content: center;
+  font-size: 1.1rem !important;
+  align-items: center;
+  padding: 0.5rem !important;
+  height: auto !important;
+  &.is_create {
+    height: 52px !important;
+  }
+}
