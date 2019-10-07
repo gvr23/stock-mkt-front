@@ -6,7 +6,7 @@ import { setStocks } from "../../actions";
 import { stocksSelector } from "../../selectors";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
-import { updown, pricepig } from '../../assets/images';
+import Card from '../../components/card';
 
 class Home extends Component {
   constructor(props) {
@@ -52,106 +52,7 @@ class Home extends Component {
   }
 
   renderStocks(stockList) {
-    return Object.keys(stockList).map(stockKey => {
-      // const stock = stockList[stockKey]
-      console.log(stockList[stockKey]);
-      return (
-        <div className="card">
-          <div className="card-content">
-            <div className="media">
-              <div className="media-left">
-                <figure className="image is-96x96">
-                  <AdaptableImg src={stockList[stockKey].companylogo} />
-                </figure>
-              </div>
-
-              <div className="media-content">
-                <p className="title is-5">{stockList[stockKey]["name"]}</p>
-                <p
-                  className="subtitle is-7"
-                  style={{ maxHeight: "5vh", overflow: "hidden" }}
-                >
-                  {stockList[stockKey]["description"]}
-                </p>
-              </div>
-
-              <div className="media-right">
-                <ul>
-                  <li>
-                    <Button
-                      text={<Icon name="chart-line fa-1x" />}
-                      className="is-primary"
-                      style={{ marginBottom: 5, width: "5vh" }}
-                    />
-                  </li>
-                  <li>
-                    <Button
-                      text={<Icon name="fas fa-shopping-bag fa-1x" />}
-                      className="is-primary"
-                      style={{ marginBottom: 5, width: "5vh" }}
-                    />
-                  </li>
-                  <li>
-                    <Button
-                      text={<Icon name="fas fa-newspaper fa-1x" />}
-                      className="is-primary"
-                      style={{ marginBottom: 5, width: "5vh" }}
-                    />
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <footer
-            style={{
-              display: "flex",
-              position: "absolute",
-              bottom: "3.1vh",
-              left: "32%",
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <p style={{ marginRight: 12, textAlign: 'center', alignSelf: 'center' }}>{stockList[stockKey]["currency"]} {stockList[stockKey]["price"]}</p>
-            <p style={{ textAlign: 'center', alignSelf: 'center' }}><img src={updown} style={{ height: 20, width: 20 }} alt=""/> {stockList[stockKey]["change"]}</p>
-          </footer>
-        </div>
-      );
-
-      // return <div className="_stock" key={stockKey}>
-      //     <div
-      //         className="left"
-      //     >
-      //         <AdaptableImg
-      //             src={stockList[stockKey].companylogo}
-      //         />
-      //     </div>
-      //     <div
-      //         className="right"
-      //     >
-      //         <small><b>{stockList[stockKey]["name"]}</b></small>
-      //   <small>{stockList[stockKey]["price"]} (verde rojo)</small>
-      //   <small>{stockList[stockKey]["change"]}(flecha verde roja)</small>
-      //         <div
-      //             className="btns"
-      //         >
-      //   <Button
-      //       text={<Icon name="chart-line" />}
-      //       className="is-primary is-small"
-      //       style={{
-      //           marginRight: 10
-      //       }}
-      //   />
-      //             <Button
-      //   className="is-success is-small"
-      //   text="Comprar"
-      //             />
-
-      //         </div>
-      //     </div>
-      // </div>
-    });
+    return Object.keys(stockList).map(stockKey => <Card item={stockList[stockKey]} />);
   }
 
   render() {
