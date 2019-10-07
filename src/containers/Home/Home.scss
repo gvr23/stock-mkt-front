@@ -37,4 +37,111 @@
   &:hover {
     transform: scale(1.025);
   }
+  &.is-full-width {
+    width: 100%;
+    box-shadow: unset;
+    &:hover {
+      transform: unset;
+    }
+  }
+}
+
+._overlay {
+  visibility: hidden;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.5s ease;
+  opacity: 0;
+  &.show {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+._buy_bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30vw;
+  height: 100vh;
+  background: #fff;
+  background: $beige-lighter;
+  transition: all 0.5s ease;
+  transform: translateX(100%);
+  &.show {
+    transform: translateX(0%);
+  }
+  .header {
+    display: flex;
+    border-top: $beige-lighter 0.5px solid;
+    background: $primary;
+    padding: 20px;
+    color: #fff;
+    justify-content: flex-end;
+  }
+  .content {
+    padding: 15px;
+    overflow-y: scroll;
+  }
+}
+
+.holdings {
+  flex: 1;
+  border-right: solid 1px $beige-lighter;
+  padding: 20px;
+  .holding {
+    border: solid 1px $beige-lighter;
+    box-sizing: border-box;
+    margin-top: 10px;
+    box-shadow: 3px 3px 8px 0px $beige-light;
+    padding: 10px;
+    display: flex;
+    .left {
+      flex: 1;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .center {
+      flex: 3;
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      .left {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+      .right {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 0px 20px;
+        align-items: center;
+        .value {
+          font-weight: 600;
+          font-size: 1.2rem;
+        }
+      }
+    }
+    .right {
+      .price {
+        box-shadow: 0px 0px 0px 1px $beige-light;
+        padding: 5px;
+        font-size: 0.8rem;
+        align-self: stretch;
+        text-align: center;
+        font-weight: 500;
+        border-radius: 4px;
+      }
+      flex-direction: column;
+      flex: 1.5;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+  }
 }

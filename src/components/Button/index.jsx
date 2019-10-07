@@ -22,6 +22,7 @@ function Button(props) {
         style={props.style || {}}
         className={generateClassName(props)}
         disabled={props.disabled}
+        dangerouslySetInnerHTML={props.dangerouslySetInnerHTML}
     >{props.text}</button>
 
 }

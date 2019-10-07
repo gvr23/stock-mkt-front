@@ -7,9 +7,12 @@
   &.is_create {
     height: 52px !important;
   }
+  &.is-medium {
+    font-size: 0.8rem !important;
+    padding: 0.35rem !important;
+  }
   &.is-small {
     font-size: 0.6rem !important;
     padding: 0.25rem !important;
-    
   }
 }

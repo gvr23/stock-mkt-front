@@ -22,6 +22,12 @@ $input-shadow: none;
     display: flex;
     align-items: center;
     input {
+      &.error {
+        background: #fef4f6;
+      }
+      &.success {
+        background: #eefbf6;
+      }
       font-family: $body-family;
       padding: 1.5rem;
       z-index: 1;

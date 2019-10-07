@@ -10,7 +10,8 @@ import {
     withRouter
 } from 'react-router-dom';
 import {
-    updatePrice
+    updatePrice,
+    updateBalance
 } from '../actions';
 import { push } from 'connected-react-router';
 import {
@@ -18,14 +19,22 @@ import {
     Login
 } from './asyncRoutes';
 import { isLoggedSelector } from '../selectors';
+import { numberWithCommas } from '../utils';
 
 class RouterApp extends React.Component {
     componentDidMount() {
         const socket = io.connect(SOCKET_URL, {
-            transports: ["websocket"]
+            transports: ["websocket"],
+            query: {
+                userUUID: this.props.userUUID
+            }
         });
         socket.on('connect', () => {
             console.log('CONNECTED')
+        })
+        socket.on('new.balance', (data) => {
+            console.log({ data })
+            this.props.updateBalance(parseFloat(data.toFixed(2)))
         })
         socket.on('new.stock.value', (data) => {
             console.log({ data })
@@ -65,7 +74,7 @@ export const Layout = withRouter((props) => {
         return <>
             <nav id="navbar" className="navbar is-primary" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
-                    <a className="navbar-item" href="https://bulma.io">
+                    <a className="navbar-item" href="#">
                         <h1
                             className="has-text-weight-bold"
                         >
@@ -78,6 +87,15 @@ export const Layout = withRouter((props) => {
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
                     </a>
+                </div>
+                <div className="navbar-end">
+                    <div className="navbar-item">
+                        <div className="buttons">
+                            <strong
+                                className="has-text-white"
+                            > {numberWithCommas(props.balance || 0)} USD</strong>
+                        </div>
+                    </div>
                 </div>
             </nav>
             {props.children}
@@ -147,13 +165,15 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 
 const mapStateToProps = (state) => {
     const isLogged = isLoggedSelector(state);
-    console.log({ isLogged })
     return {
-        isLogged
+        isLogged,
+        balance: state.app.balance,
+        userUUID: state.app.userUUID,
     }
 }
 
 export default (connect(mapStateToProps, {
     push,
-    updatePrice
+    updatePrice,
+    updateBalance
 })(RouterApp))

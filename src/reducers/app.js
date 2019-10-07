@@ -1,4 +1,4 @@
-import { SET_IS_LOADING, LOGGED_IN } from '../constants';
+import { SET_IS_LOADING, LOGGED_IN, UPDATE_BALANCE } from '../constants';
 
 const INITIAL_STATE = {
     isLoading: true,
@@ -10,6 +10,11 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
+        case UPDATE_BALANCE:
+            return {
+                ...state,
+                balance: payload
+            }
         case SET_IS_LOADING:
             return {
                 ...state,

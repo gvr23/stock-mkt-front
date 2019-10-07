@@ -1,13 +1,24 @@
 import {
-  SET_STOCKS, UPDATE_STOCK_PRICE
+  SET_STOCKS,
+  UPDATE_STOCK_PRICE,
+  SET_HOLDINGS
 } from '../constants';
 
 const INITIAL_STATE = {
-  stockList: {}
+  stockList: {},
+  holdings: {},
 };
 
 export default (state = INITIAL_STATE, { payload, type }) => {
   switch (type) {
+    case SET_HOLDINGS:
+      return {
+        ...state,
+        holdings: payload.reduce((prev, curr) => {
+          prev[curr.stock_uuid] = curr["quantity"]
+          return prev
+        }, {}),
+      }
     case SET_STOCKS:
       return {
         ...state,
@@ -18,6 +29,7 @@ export default (state = INITIAL_STATE, { payload, type }) => {
             companyname: curr.companyname,
             currency: curr.currency,
             price: curr.last_price.close_price,
+            priceUUID: curr.last_price.uuid,
             timestamp: curr.last_price.timestamp,
             change: curr.last_price.change_price,
             changePercent: curr.last_price.change_percent,
@@ -29,6 +41,7 @@ export default (state = INITIAL_STATE, { payload, type }) => {
       }
     case UPDATE_STOCK_PRICE:
       const { stockList } = state
+
       stockList[payload.stock_uuid] = {
         ...stockList[payload.stock_uuid],
         price: payload.close_price,
