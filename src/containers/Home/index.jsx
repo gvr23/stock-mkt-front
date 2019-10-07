@@ -124,7 +124,6 @@ class Home extends Component {
 
 const mapStateToProps = state => {
     const { stockList } = state.stocks
-    console.log({ stockList })
     return {
         stockList: stockList
     }
