@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
-import { setStocks, logInUser, setHoldings } from '../../actions'
+import { setStocks, logInUser, setHoldings, upsertHolding } from '../../actions'
 import Button from '../../components/Button';
 import Icon from '../../components/Icon';
 import Input from '../../components/Input';
 import { numberWithCommas } from '../../utils';
-
 
 class SideBar extends Component {
     constructor(props) {
@@ -29,7 +28,6 @@ class SideBar extends Component {
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
         const comission = actionValue * 0.008
         const totalAmount = actionValue + comission
-
         return totalAmount
     }
     render() {
@@ -366,7 +364,7 @@ class Home extends Component {
                     flex: '1 1',
                     display: 'flex',
                     flexDirection: 'row',
-                    borderTop: 'solid 1px black'
+                    borderTop: 'solid 1px black',
                 }}
             >
                 <div
@@ -380,6 +378,7 @@ class Home extends Component {
                         const changePercent = stockObj["changePercent"]
                         const currency = stockObj["currency"]
                         return <div
+                            key={stockUUID}
                             className={"holding"}
                         >
                             <div
@@ -461,6 +460,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
     setStocks,
+    upsertHolding,
     logInUser,
     setHoldings,
 })(Home);

@@ -1,7 +1,8 @@
 import {
   SET_STOCKS,
   UPDATE_STOCK_PRICE,
-  SET_HOLDINGS
+  SET_HOLDINGS,
+  UPSERT_HOLDING
 } from '../constants';
 
 const INITIAL_STATE = {
@@ -11,6 +12,14 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, { payload, type }) => {
   switch (type) {
+    case UPSERT_HOLDING:
+      return {
+        ...state,
+        holdings: {
+          ...state.holdings,
+          [payload.stock_uuid]: payload.quantity
+        }
+      }
     case SET_HOLDINGS:
       return {
         ...state,

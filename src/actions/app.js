@@ -2,6 +2,7 @@ import {
     SET_IS_LOADING,
     LOGGED_IN,
     UPDATE_BALANCE,
+    UPSERT_HOLDING,
 } from '../constants';
 
 export const setIsLoading = (payload) => ({
@@ -17,4 +18,9 @@ export const logInUser = (payload) => ({
 export const updateBalance = (payload) => ({
     type: UPDATE_BALANCE,
     payload,
+})
+
+export const upsertHolding = payload => ({
+    type: UPSERT_HOLDING,
+    payload
 })

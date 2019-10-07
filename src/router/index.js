@@ -11,7 +11,8 @@ import {
 } from 'react-router-dom';
 import {
     updatePrice,
-    updateBalance
+    updateBalance,
+    upsertHolding,
 } from '../actions';
 import { push } from 'connected-react-router';
 import {
@@ -40,6 +41,12 @@ class RouterApp extends React.Component {
             console.log({ data })
             this.props.updatePrice(data)
         })
+
+        socket.on('upsert.holding', (data) => {
+            this.props.upsertHolding(data)
+        })
+
+
     }
     render() {
         return (<Layout
@@ -175,5 +182,6 @@ const mapStateToProps = (state) => {
 export default (connect(mapStateToProps, {
     push,
     updatePrice,
-    updateBalance
+    updateBalance,
+    upsertHolding
 })(RouterApp))

@@ -87,9 +87,10 @@
 }
 
 .holdings {
-  flex: 1;
+  flex: 1 1;
   border-right: solid 1px $beige-lighter;
   padding: 20px;
+  overflow-y: scroll;
   .holding {
     border: solid 1px $beige-lighter;
     box-sizing: border-box;
@@ -98,7 +99,7 @@
     padding: 10px;
     display: flex;
     .left {
-      flex: 1;
+      flex: 0.75;
       padding: 10px;
       display: flex;
       justify-content: center;
