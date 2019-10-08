@@ -1,0 +1,48 @@
+._card {
+  & > span {
+    position: absolute;
+    left: 15px;
+    bottom: 5px;
+    font-size: 0.7rem;
+  }
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  box-shadow: 1px 1px 12px $brown;
+  border-radius: 3px;
+  width: 320px;
+  margin: 10px;
+  padding: 15px;
+  .left {
+    flex: 1.5;
+    display: flex;
+    // justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    flex-direction: column;
+  }
+  .center {
+    flex: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    h2 {
+      font-weight: 700;
+    }
+    h3 {
+      font-weight: 600;
+    }
+    p {
+      // font-size: 0.7rem;
+    }
+  }
+  .right {
+    flex: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+  }
+}

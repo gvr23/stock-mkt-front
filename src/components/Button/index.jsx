@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 /** Function to generate classNames for button component 
@@ -9,11 +9,35 @@ import PropTypes from 'prop-types';
 function generateClassName(props) {
     return `button
     ${props.isFluid ? ' is-fullwidth' : ''}
-${props.className ? ` ${props.className}` : ''}`
+${props.className ? ` ${props.className}` : ''}
+${props.isLoading ? ' is-loading' : ''}
+`
 }
+
 
 /** Renders button component */
 function Button(props) {
+    const [clickReady, setClickReady] = useState(false);
+    if (props.isConfirm) {
+        return <button
+            onClick={(e) => {
+                e.preventDefault()
+                if (!clickReady) {
+                    setClickReady(true)
+                    setTimeout(() => {
+                        setClickReady(false)
+                    }, 3000)
+                } else {
+                    props.onClick()
+                    setClickReady(false)
+                }
+            }}
+            style={props.style || {}}
+            className={generateClassName(props)}
+            disabled={props.disabled}
+            dangerouslySetInnerHTML={props.dangerouslySetInnerHTML}
+        >{clickReady ? props.textConfirm : props.text}</button>
+    }
     const {
         onClick
     } = props;

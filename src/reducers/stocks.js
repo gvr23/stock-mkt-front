@@ -13,6 +13,15 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, { payload, type }) => {
   switch (type) {
     case UPSERT_HOLDING:
+      if (payload.quantity == 0) {
+        delete state.holdings[payload.stock_uuid]
+        return {
+          ...state,
+          holdings: {
+            ...state.holdings
+          }
+        }
+      }
       return {
         ...state,
         holdings: {

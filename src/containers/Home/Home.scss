@@ -23,6 +23,23 @@
     justify-content: center;
     align-items: center;
     display: flex;
+    & > h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 5px;
+    }
+    & > h3 {
+      font-weight: 600;
+      margin: 5px;
+      font-size: 18px;
+    }
+    & > span {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    & > p {
+      margin: 5px; // font-size: 0.7rem;
+    }
     flex-direction: column;
     .btns {
       display: flex;
@@ -51,8 +68,11 @@
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   width: 100vw;
+  top: 0;
+  left: 0;
   height: 100vh;
   transition: all 0.5s ease;
+  z-index: 10000;
   opacity: 0;
   &.show {
     visibility: visible;
@@ -61,6 +81,7 @@
 }
 ._buy_bar {
   position: absolute;
+  z-index: 10001;
   top: 0;
   right: 0;
   width: 30vw;
@@ -74,11 +95,11 @@
   }
   .header {
     display: flex;
-    border-top: $beige-lighter 0.5px solid;
     background: $primary;
-    padding: 20px;
+    padding: 10px;
+    height: 52px;
     color: #fff;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
   .content {
     padding: 15px;
@@ -86,10 +107,48 @@
   }
 }
 
+._sell_bar {
+  position: absolute;
+  z-index: 10001;
+  top: 0;
+  left: 0;
+  width: 30vw;
+  height: 100vh;
+  background: #fff;
+  background: $beige-lighter;
+  transition: all 0.5s ease;
+  transform: translateX(-100%);
+  &.show {
+    transform: translateX(0%);
+  }
+  .header {
+    display: flex;
+    background: $primary;
+    padding: 10px;
+    height: 52px;
+    color: #fff;
+    justify-content: flex-end;
+  }
+  .content {
+    padding: 15px;
+    overflow-y: scroll;
+    ._holdings {
+      color: $primary;
+      background: $primary;
+      color: #fff;
+      border-radius: 5px;
+      padding: 15px 25px;
+
+      text-align: center;
+    }
+  }
+}
+
 .holdings {
   flex: 1 1;
   border-right: solid 1px $beige-lighter;
   padding: 20px;
+  max-height: 100%;
   overflow-y: scroll;
   .holding {
     border: solid 1px $beige-lighter;
@@ -145,4 +204,14 @@
       align-items: center;
     }
   }
+}
+
+.card {
+  margin: 10px;
+  height: 38%;
+  background-color: white;
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+  color: #4a4a4a;
+  max-width: 25%;
+  position: relative;
 }

@@ -18,8 +18,8 @@ function renderError(props) {
 
 /** Input component */
 function Input(props) {
-    return <div className={"field" + (props.noMargin ? ' _no_margin' : '')}>
-        <div className={"control" + (props.noPadding ? " _no_padding" : '')}>
+    return <div className={"field" + (props.noMargin ? ' _no_margin' : '') + (props.extra ? ' has-addons' : '')}>
+        <div className={"control" + (props.noPadding ? " _no_padding" : '') + (props.extra ? ' is-expanded' : '')}>
             {props.icon && <Icon
                 name={props.icon}
                 style={{
@@ -42,6 +42,9 @@ function Input(props) {
             />
             {renderError(props)}
         </div>
+        {props.extra ? <div className="control">
+            {props.extra}
+        </div> : null}
     </div>
 }
 

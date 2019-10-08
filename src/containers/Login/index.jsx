@@ -35,7 +35,7 @@ class Login extends React.Component {
       })
     }
 
-    const { data: { data } } = await axios.post(API_URL, {
+    const { data } = await axios.post(API_URL, {
       query: `{
         login(username: "${user}", password: "${pass}") {
           uuid
@@ -52,7 +52,10 @@ class Login extends React.Component {
         [key]: err
       })
     }
-    this.props.logInUser(data.login)
+    this.props.logInUser(data.data.login)
+    setTimeout(() => {
+      window.location.reload()
+    }, 250);
   }
   onChange(e) {
     this.setState({

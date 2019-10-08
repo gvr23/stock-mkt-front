@@ -12,6 +12,7 @@ import {
 import {
     updatePrice,
     updateBalance,
+    logOff,
     upsertHolding,
 } from '../actions';
 import { push } from 'connected-react-router';
@@ -21,6 +22,7 @@ import {
 } from './asyncRoutes';
 import { isLoggedSelector } from '../selectors';
 import { numberWithCommas } from '../utils';
+import Button from '../components/Button';
 
 class RouterApp extends React.Component {
     componentDidMount() {
@@ -98,9 +100,25 @@ export const Layout = withRouter((props) => {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
-                            <strong
-                                className="has-text-white"
-                            > {numberWithCommas(props.balance || 0)} USD</strong>
+                            <Button
+                                // disabled
+                                style={{
+                                    color: '#fff',
+                                    borderColor: '#fff'
+                                }}
+                                className="is-primary is-outlined"
+                                text={<span>Balance: <b>{numberWithCommas(props.balance || 0)}</b> USD</span>}
+                            />
+                            <Button
+                                // disabled
+                                onClick={props.logOff}
+                                style={{
+                                    color: '#fff',
+                                    borderColor: '#fff'
+                                }}
+                                className="is-primary is-outlined"
+                                text={'Salir'}
+                            />
                         </div>
                     </div>
                 </div>
@@ -183,5 +201,6 @@ export default (connect(mapStateToProps, {
     push,
     updatePrice,
     updateBalance,
+    logOff,
     upsertHolding
 })(RouterApp))
