@@ -19,7 +19,7 @@ const Card = (props) => {
             <div
                 className="center"
             >
-                <h2>{item.companyname}</h2>
+                <h2>{item.name}</h2>
                 <h3
                 // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
                 >{item.price} {item.currency}</h3>

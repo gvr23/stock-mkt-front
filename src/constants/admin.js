@@ -1,0 +1,1 @@
+export const SET_RANKING = 'admin/set_rankings'

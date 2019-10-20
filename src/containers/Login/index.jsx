@@ -42,6 +42,11 @@ class Login extends React.Component {
           username
           admin
           balance
+          params{
+            comission
+            exchangeRate
+            status
+          }
         }
       }`
     })

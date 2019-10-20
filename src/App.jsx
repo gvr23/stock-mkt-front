@@ -11,6 +11,7 @@ import {
 	PersistGate
 } from 'redux-persist/integration/react'
 import './styles.scss';
+import 'animate.css'
 import configureStore from './store';
 import { ConnectedRouter } from 'connected-react-router'
 const {
@@ -34,7 +35,7 @@ class App extends Component {
 			<PersistGate
 				persistor={persistor}
 				// onBeforeLift={__ASYNC_FUNCTION_BEFORE_REHYDRATE__}
-				loading={<div>LOADING...</div>}
+				loading={<div className="pageloader is-active is-primary"><span className="title">Cargando...</span></div>}
 			>
 				<ConnectedRouter history={history}>
 					<RouterApp />

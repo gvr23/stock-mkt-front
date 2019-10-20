@@ -1,7 +1,9 @@
 import {
   SET_STOCKS,
   UPDATE_STOCK_PRICE,
-  SET_HOLDINGS
+  SET_HOLDINGS,
+  CONNECTED,
+  SET_TRANSACTIONS
 } from "../constants";
 
 export const setStocks = (payload) => ({
@@ -17,4 +19,13 @@ export const updatePrice = (payload) => ({
 export const setHoldings = (payload) => ({
   type: SET_HOLDINGS,
   payload,
+})
+
+export const setConnected = _ => ({
+  type: CONNECTED
+})
+
+export const setTransactions = payload => ({
+  type: SET_TRANSACTIONS,
+  payload
 })

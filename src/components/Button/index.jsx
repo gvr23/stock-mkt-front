@@ -6,11 +6,12 @@ import PropTypes from 'prop-types';
  *  @property {bool} isFluid - is it fullwidth ot not
  *  @property {string} className - className
 */
-function generateClassName(props) {
+function generateClassName(props, clickReady = false) {
     return `button
     ${props.isFluid ? ' is-fullwidth' : ''}
 ${props.className ? ` ${props.className}` : ''}
 ${props.isLoading ? ' is-loading' : ''}
+${clickReady ? ' is-success' : ''}
 `
 }
 
@@ -33,7 +34,7 @@ function Button(props) {
                 }
             }}
             style={props.style || {}}
-            className={generateClassName(props)}
+            className={generateClassName(props, clickReady)}
             disabled={props.disabled}
             dangerouslySetInnerHTML={props.dangerouslySetInnerHTML}
         >{clickReady ? props.textConfirm : props.text}</button>

@@ -19,6 +19,9 @@ function renderError(props) {
 /** Input component */
 function Input(props) {
     return <div className={"field" + (props.noMargin ? ' _no_margin' : '') + (props.extra ? ' has-addons' : '')}>
+        {props.prev ? <div className="control">
+            {props.prev}
+        </div> : null}
         <div className={"control" + (props.noPadding ? " _no_padding" : '') + (props.extra ? ' is-expanded' : '')}>
             {props.icon && <Icon
                 name={props.icon}

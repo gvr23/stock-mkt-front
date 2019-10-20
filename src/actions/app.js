@@ -4,6 +4,10 @@ import {
     UPDATE_BALANCE,
     UPSERT_HOLDING,
     LOG_OUT,
+    SET_COMISSION,
+    SET_EXCHANGE_RATE,
+    SET_STATUS,
+    ADD_NEWS,
 } from '../constants';
 
 export const setIsLoading = (payload) => ({
@@ -28,4 +32,21 @@ export const upsertHolding = payload => ({
 
 export const logOff = _ => ({
     type: LOG_OUT
+})
+
+export const setComission = payload => ({
+    type: SET_COMISSION,
+    payload
+})
+export const setExchangeRate = payload => ({
+    type: SET_EXCHANGE_RATE,
+    payload
+})
+export const setStatus = payload => ({
+    type: SET_STATUS,
+    payload
+})
+export const addNews = payload => ({
+    type: ADD_NEWS,
+    payload
 })

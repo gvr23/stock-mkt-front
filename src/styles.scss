@@ -17,6 +17,8 @@ $body-family: "Montserrat";
 
 @import "~bulma";
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,900&display=swap");
+@import "bulma-pageloader/dist/css/bulma-pageloader.sass";
+@import "react-notifications-component/dist/scss/notification.scss";
 
 html,
 body,
@@ -32,6 +34,8 @@ body,
 
 @import "./containers/Login/Login.scss";
 @import "./containers/Home/Home.scss";
+@import "./containers/AdminDashboard/AdminDashboard.scss";
+@import "./containers/AdminManageGame/AdminManageGame.scss";
 
 // @import "~bulma/sass/utilities/_all.sass";
 // @import "~bulma/sass/base/_all.sass";

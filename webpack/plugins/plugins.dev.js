@@ -11,7 +11,7 @@ module.exports = [
         'API_URL': JSON.stringify("http://stockmkt.back.ngrok.io/graph"),
         'SOCKET_URL': JSON.stringify("http://stockmkt.socket.ngrok.io")
     }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     new HtmlWebPackPlugin({
         template: "./src/index.html",
         filename: "./index.html",

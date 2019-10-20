@@ -74,6 +74,7 @@ module.exports = env => {
     devServer: {
       historyApiFallback: true,
       disableHostCheck: true,
+      port: 8889,
       // hot: true
     },
     optimization: {

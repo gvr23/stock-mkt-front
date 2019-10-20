@@ -2,16 +2,30 @@ import {
   SET_STOCKS,
   UPDATE_STOCK_PRICE,
   SET_HOLDINGS,
-  UPSERT_HOLDING
+  UPSERT_HOLDING,
+  SET_TRANSACTIONS,
+  CONNECTED
 } from '../constants';
 
 const INITIAL_STATE = {
   stockList: {},
   holdings: {},
+  connected: false,
+  transactions: []
 };
 
 export default (state = INITIAL_STATE, { payload, type }) => {
   switch (type) {
+    case SET_TRANSACTIONS:
+      return {
+        ...state,
+        transactions: payload
+      }
+    case CONNECTED:
+      return {
+        ...state,
+        connected: true
+      }
     case UPSERT_HOLDING:
       if (payload.quantity == 0) {
         delete state.holdings[payload.stock_uuid]
@@ -59,13 +73,25 @@ export default (state = INITIAL_STATE, { payload, type }) => {
       }
     case UPDATE_STOCK_PRICE:
       const { stockList } = state
+      console.log(stockList[payload.stock_uuid])
 
       stockList[payload.stock_uuid] = {
         ...stockList[payload.stock_uuid],
         price: payload.close_price,
         timestamp: payload.timestamp,
         change: payload.change_price,
-        changePercent: payload.change_percent
+        changePercent: payload.change_percent,
+        priceUUID: payload.uuid,
+        history: [
+          ...stockList[payload.stock_uuid].history,
+          {
+            "uuid": payload.uuid,
+            "close_price": payload.close_price,
+            "timestamp": payload.timestamp,
+            "change_price": payload.change_price,
+            "change_percent": payload.change_percent
+          }
+        ]
       }
       return {
         ...state,

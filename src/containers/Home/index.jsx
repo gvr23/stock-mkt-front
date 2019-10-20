@@ -2,15 +2,116 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
-import { setStocks, logInUser, setHoldings, upsertHolding } from '../../actions'
+import { setStocks, logInUser, setHoldings, upsertHolding, setTransactions } from '../../actions'
 import Button from '../../components/Button';
 import Icon from '../../components/Icon';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
 import { numberWithCommas } from '../../utils';
 import { stocksSelector } from '../../selectors/stocks';
+import { store } from 'react-notifications-component'
 
 
+class Transactions extends Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        const { showTransactions } = this.props;
+        return <>
+            <div
+                onClick={this.props.onClose}
+                className={`_overlay${showTransactions ? ' show' : ''}`}
+            />
+            <div
+                style={{
+                    height: (window.innerHeight - (document.querySelector('#navbar') || {}).clientHeight) * 0.6
+                }}
+                className={`_transactions_bottom${this.props.showTransactions ? ' show' : ''}`}
+            >
+                <nav id="middle-navbar" style={{ position: 'absolute', top: 0, left: 0, width: '100%' }} className="navbar is-primary" role="navigation" aria-label="main navigation">
+                    <div className="navbar-brand">
+                        <a className="navbar-item" href="#">
+                            <h1
+                                className="has-text-weight-bold"
+                            >
+                                Transacciones realizadas
+                </h1>
+                        </a>
+
+                        <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div className="navbar-end">
+                        <div className="navbar-item">
+                            <div className="buttons">
+                                <Button
+                                    onClick={this.props.onClose}
+                                    style={{
+                                        color: '#fff',
+                                        borderColor: '#fff'
+                                    }}
+                                    className="is-primary is-outlined"
+                                    text={<span>Cerrar</span>}
+                                />
+
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div
+                    className="_container"
+                >
+                    {this.props.transactions.map((transaction) => {
+                        const price = this.props.stockList[transaction.stock_uuid].price
+                        const transactionPrice = transaction.stock_price.close_price
+                        const isBuy = transaction.is_buy
+                        return <div className="_transaction" key={transaction.uuid}>
+                            <div className="left">
+                                <AdaptableImg
+                                    src={this.props.stockList[transaction.stock_uuid].companylogo}
+                                />
+                            </div>
+                            <div className="right">
+
+                                <p>Fecha y hora de transaccion: <b>{transaction.created_at}</b></p>
+                                <p>Estado: <b>{transaction.status}</b></p>
+                                <p>Moneda: <b>{transaction.stock.currency == 'USD' ? 'Dólares' : 'Soles'}</b></p>
+                                <p>Cantidad de acciones: <b>{transaction.quantity}</b></p>
+                                <p>Precio al momento de {isBuy ? 'compra' : 'venta'}: <b>{transactionPrice.toFixed(2)} {transaction.stock.currency}</b></p>
+                                <hr />
+                                <p>Monto {isBuy ? 'pagado' : 'recibido'}: <b>{numberWithCommas((transaction.quantity * transactionPrice).toFixed(2))} {transaction.stock.currency}</b></p>
+
+
+                                <div className={`${isBuy ? 'buy' : 'sell'}`}>
+                                    <Button
+                                        style={{
+                                            // color: '#fff',
+                                            // borderColor: '#fff'
+                                        }}
+                                        className={`is-primary is-outlined`}
+                                        text={<span>{isBuy ? 'COMPRA' : 'VENTA'}</span>}
+                                    />
+
+                                    <Button
+                                        className={`is-primary is-outlined${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? ' is-win' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? ' is-lose' : ' is-draw'}`}
+                                        text={<span><Icon
+                                            style={{ marginRight: 15 }}
+                                            name={`${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? 'arrow-circle-up' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? 'arrow-circle-down' : 'equals'}`}
+                                        />{`      VA: ${price.toFixed(2)}`}</span>}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    })}
+                </div>
+            </div>
+        </>
+    }
+}
 
 class LeftSideBar extends Component {
     constructor(props) {
@@ -44,22 +145,19 @@ class LeftSideBar extends Component {
         return parseInt(this.state.quantity)
     }
     getTotal() {
-
         const { stockList, stockToSell } = this.props
-
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
-        const comission = actionValue * 0.008
+        const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
         return totalAmount
     }
     render() {
-
         const { show, stockToSell, stockList, balance } = this.props
-
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
-        const comission = actionValue * 0.008
+        const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
         const newBalance = balance + totalAmount
+        const newBalancePen = balance + (totalAmount / this.props.exchangeRate)
         return <>
             <div
                 onClick={() => {
@@ -97,9 +195,6 @@ class LeftSideBar extends Component {
                         maxHeight: (window.innerHeight - (document.querySelector('#navbar') || {}).clientHeight) || 0
                     }}
                 >
-
-
-
                     {stockToSell !== undefined && <div
                         className=""
                     >
@@ -115,27 +210,8 @@ class LeftSideBar extends Component {
                             <div
                                 className="right"
                             >
-
-
                                 <h2>{stockList[stockToSell].companyname}</h2>
-                                <h3
-                                // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
-
-
-                                >{stockList[stockToSell].price} {stockList[stockToSell].currency}</h3>
-                                {/* <p
-                >{item.description.slice(0, 64)}</p> */}
-                                {/* <div> */}
-                                {/* <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around',
-                        background: 'red',
-                        alignSelf: 'stretch'
-                    }}
-                > */}
+                                <h3>{stockList[stockToSell].price} {stockList[stockToSell].currency}</h3>
                                 <Icon
 
                                     className={`fa-2x${stockList[stockToSell].changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
@@ -189,6 +265,7 @@ class LeftSideBar extends Component {
                                 onClick={(e) => {
                                     e.preventDefault()
                                     this.setState({
+                                        error: undefined,
                                         quantity: this.props.holdings[stockToSell]
                                     })
                                 }}
@@ -201,7 +278,7 @@ class LeftSideBar extends Component {
                         <Input
                             readOnly
 
-                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2))}
+                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(actionValue / this.props.exchangeRate).toFixed(2)} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
@@ -210,15 +287,15 @@ class LeftSideBar extends Component {
                         <Input
                             readOnly
 
-                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(comission.toFixed(2))}
+                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(comission.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(comission / this.props.exchangeRate).toFixed(2)} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
                         />
-                        <small>Total a pagar</small>
+                        <small>Total a recibir</small>
                         <Input
                             readOnly
-                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2))}
+                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(totalAmount / this.props.exchangeRate).toFixed(2)} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
@@ -229,14 +306,16 @@ class LeftSideBar extends Component {
                         <Input
                             className={this.state.quantity > this.props.holdings[stockToSell] ? 'error' : 'success'}
                             readOnly
-                            value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas((newBalance).toFixed(2))}
+                            // value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas((newBalance).toFixed(2))}
+                            value={'USD' + '  ' + numberWithCommas((stockList[stockToSell]["currency"] === 'PEN' ? newBalancePen : newBalance).toFixed(2))}
                             onChange={() => { }}
                             disabled
                         />
+
                         <Button
                             isLoading={this.state.isSelling}
                             isConfirm
-                            textConfirm="Click para vender"
+                            textConfirm="Click para confirmar venta"
                             disabled={this.state.isSelling || typeof this.state.error === 'string'}
                             onClick={(e) => {
                                 if (e)
@@ -256,7 +335,6 @@ class LeftSideBar extends Component {
         </>
     }
 }
-
 
 class SideBar extends Component {
     constructor(props) {
@@ -283,16 +361,17 @@ class SideBar extends Component {
     getTotal() {
         const { stockList, stockToBuy } = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
-        const comission = actionValue * 0.008
+        const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
         return totalAmount
     }
     render() {
         const { show, stockToBuy, stockList, balance } = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
-        const comission = actionValue * 0.008
+        const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
         const newBalance = balance - totalAmount
+        const newBalancePen = balance - (totalAmount / this.props.exchangeRate)
         return <>
             <div
                 onClick={() => {
@@ -324,11 +403,9 @@ class SideBar extends Component {
                 <div
                     className="content"
                     style={{
-                        maxHeight: (window.innerHeight - (document.querySelector('#navbar') || {}).clientHeight - (document.querySelector('._buy_bar .header') || {}).clientHeight) || 0
+                        maxHeight: (window.innerHeight - (document.querySelector('#navbar') || {}).clientHeight) || 0
                     }}
                 >
-
-
                     {stockToBuy !== undefined && <div
                         className=""
                     >
@@ -343,35 +420,17 @@ class SideBar extends Component {
                             <div
                                 className="right"
                             >
-
                                 <h2>{stockList[stockToBuy].companyname}</h2>
                                 <h3
-                                // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
                                 >{stockList[stockToBuy].price} {stockList[stockToBuy].currency}</h3>
-                                {/* <p
-                >{item.description.slice(0, 64)}</p> */}
-                                {/* <div> */}
-                                {/* <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around',
-                        background: 'red',
-                        alignSelf: 'stretch'
-                    }}
-                > */}
                                 <Icon
                                     className={`fa-2x${stockList[stockToBuy].changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
                                     name={stockList[stockToBuy].changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
                                 />
                                 <p className={`value${stockList[stockToBuy].changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{stockList[stockToBuy].changePercent} % </p>
-                                {/* </div> */}
-                                {/* </div> */}
                             </div>
                         </div>
                     </div>}
-
                     {stockToBuy !== undefined && <form>
                         <br />
                         <p
@@ -379,20 +438,27 @@ class SideBar extends Component {
                         >
                             Actualizada por última vez el {stockList[stockToBuy]["timestamp"]}
                         </p>
-                        <br />
+                        {stockList[stockToBuy]["currency"] === 'PEN' ? <>
+                            <br />
+                            <small>Tipo de cambio</small>
+                            <Input
+                                editable={"false"}
+                                disabled
+                                value={`${this.props.exchangeRate} PEN`}
+                            />
+                        </> : <br />}
                         <Input
                             onChange={(e) => this.setState({
                                 quantity: e.target.value.replace(/[^0-9]+/g, '')
                             })}
                             error={this.props.error}
                             placeholder={"Cantidad de acciones"}
-                            value={this.state.quantity}
-
+                            value={this.state.quantity.toString()}
                         />
                         <small>Valor de acciones a comprar</small>
                         <Input
                             readOnly
-                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2))}
+                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >>  ${(actionValue / this.props.exchangeRate).toFixed(2)} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
@@ -400,7 +466,7 @@ class SideBar extends Component {
                         <small>Comisión de compra</small>
                         <Input
                             readOnly
-                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(comission.toFixed(2))}
+                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(comission.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >> ${(comission / this.props.exchangeRate).toFixed(2)} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
@@ -408,7 +474,7 @@ class SideBar extends Component {
                         <small>Total a pagar</small>
                         <Input
                             readOnly
-                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2))}
+                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >> ${numberWithCommas((totalAmount / this.props.exchangeRate).toFixed(2))} USD`) : '')}
                             onChange={() => { }}
                             disabled
                             noPadding
@@ -417,9 +483,9 @@ class SideBar extends Component {
                         <hr />
                         <small>Nuevo balance al finalizar compra</small>
                         <Input
-                            className={newBalance < 0 ? 'error' : 'success'}
+                            className={((stockList[stockToBuy]["currency"] === 'USD' && newBalance < 0) || (stockList[stockToBuy]["currency"] === 'PEN') && newBalancePen < 0) ? 'error' : 'success'}
                             readOnly
-                            value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas((newBalance).toFixed(2))}
+                            value={'USD' + '  ' + numberWithCommas((stockList[stockToBuy]["currency"] === 'PEN' ? newBalancePen : newBalance).toFixed(2))}
                             onChange={() => { }}
                             disabled
 
@@ -427,7 +493,7 @@ class SideBar extends Component {
                         <Button
                             isLoading={this.state.isBuying}
                             isConfirm
-                            textConfirm="Confirmar compra"
+                            textConfirm="Click para confirmar compra"
                             disabled={this.state.isBuying}
                             onClick={(e) => {
                                 if (e)
@@ -466,34 +532,31 @@ class Home extends Component {
     async componentDidMount() {
         const { data } = await Axios.post(API_URL, {
             query: `{
-                stocks {
-                  uuid
-                  name
-                  description
-                  companyname
-                  companylogo
-                  currency
-                  last_price {
+                transactions(user_uuid: "${this.props.userUUID}") {
                     uuid
+                    status
+                    stock_uuid
+                    stock_price_uuid
+                    user_uuid
+                    created_at(format: "DD/MM/YYYY HH:mm")
+                    updated_at(format: "DD/MM/YYYY HH:mm")
+                    is_buy
+                    is_sell
+                    quantity
+                    comission
+                    comission_rate
+                    total
+                    stock_price {
                     close_price
-                    timestamp(format: "DD/MM/YYYY @ HH:mm")
-                    change_price
-                    change_percent
-                  }
-                  stock_price_history {
-                    uuid
-                    close_price
-                    timestamp(format: "DD/MM/YYYY @ HH:mm")
-                    change_price
-                    change_percent
-                  }
+                    }
+                    stock {
+                    name
+                    description
+                    companyname
+                    currency
+                    }
                 }
-                user(uuid: "${this.props.userUUID}") {
-                    uuid
-                    username
-                    admin
-                    balance
-                }
+                                    
                 holdings(user_uuid: "${this.props.userUUID}") {
                     stock_uuid
                     user_uuid
@@ -520,9 +583,8 @@ class Home extends Component {
               `
         })
         if (!data.errors) {
-            this.props.setStocks(data.data.stocks)
-            this.props.logInUser(data.data.user)
             this.props.setHoldings(data.data.holdings)
+            this.props.setTransactions(data.data.transactions)
         }
 
         this.setState({
@@ -546,23 +608,20 @@ class Home extends Component {
 
 
             const total = this.sideBar.getTotal()
-
-            if (total < 1500) {
+            const currency = this.props.stockList[this.state.stockToBuy].currency
+            if ((currency === 'USD' && total < 1500) || (currency === 'PEN' && total < 5025)) {
                 this.sideBar.reset(true)
                 return this.setState({
-                    errorBuy: 'Minima compra: 1500.00 USD o 4995.00 PEN'
+                    errorBuy: 'Minima compra: 1500.00 USD o 5025.00 PEN'
                 })
             }
-
             const { balance } = this.props
-
-            if (balance < total) {
+            if ((currency === 'USD' && balance < total) || (currency === 'PEN' && balance < (total / this.props.exchangeRate))) {
                 this.sideBar.reset(true)
                 return this.setState({
-                    errorBuy: 'No tiendes fondos suficientes para esta compra'
+                    errorBuy: 'No tienes fondos suficientes para esta compra'
                 })
             }
-
             const { data } = await Axios.post(API_URL, {
                 query: `mutation{
                     buyOrSell(
@@ -584,16 +643,36 @@ class Home extends Component {
                       comission
                       total
                       quantity
-
+                      stock_price {
+                        close_price
+                      }
+                      stock {
+                        name
+                        description
+                        companyname
+                        currency
+                      }
                     }
                   }`
             })
-
             if (!data.errors) {
                 this.setState({
                     showBuy: false,
                 }, () => {
                     this.sideBar.reset()
+                    store.addNotification({
+                        title: "Transacción exitosa",
+                        message: `Se compraron ${quantity} acciones de ${this.props.stockList[this.state.stockToBuy].companyname}`,
+                        type: "success",
+                        insert: "top",
+                        container: "top-right",
+                        animationIn: ["animated", "fadeIn"],
+                        animationOut: ["animated", "fadeOut"],
+                        dismiss: {
+                            duration: 5000,
+                            onScreen: true
+                        }
+                    });
                 })
             }
 
@@ -629,11 +708,18 @@ class Home extends Component {
             const total = this.leftSideBar.getTotal()
 
             let totalPossibleSell = this.props.holdings[this.state.stockToSell] * this.props.stockList[this.state.stockToSell].price
-            totalPossibleSell -= totalPossibleSell * 0.008
-            if (total < 1500 && (totalPossibleSell >= 1500)) {
+            totalPossibleSell -= totalPossibleSell * this.props.comission
+
+            const currency = this.props.stockList[this.state.stockToSell].currency
+
+            if (
+                (currency === 'USD' && (total < 1500 && (totalPossibleSell >= 1500)))
+                ||
+                (currency === 'PEN') && (total < 5025 && (totalPossibleSell >= 5025))
+            ) {
                 this.leftSideBar.reset(true)
                 return this.leftSideBar.setState({
-                    error: 'Mínima venta: 1500 USD o 4995 PEN'
+                    error: 'Mínima venta: 1500 USD o 5025 PEN'
                 })
             }
 
@@ -658,24 +744,44 @@ class Home extends Component {
                       comission
                       total
                       quantity
-                      
+                      stock_price {
+                        close_price
+                      }
+                      stock {
+                        name
+                        description
+                        companyname
+                        currency
+                      }
                     }
                   }`
             })
-            console.log('VENTA', data.data)
             if (!data.errors) {
                 this.setState({
                     showSell: false,
                 }, () => {
                     this.leftSideBar.reset()
+                    store.addNotification({
+                        title: "Transacción exitosa",
+                        message: `Se vendieron ${quantity} acciones de ${this.props.stockList[this.state.stockToSell].companyname}`,
+                        type: "success",
+                        insert: "top",
+                        container: "top-right",
+                        animationIn: ["animated", "fadeIn"],
+                        animationOut: ["animated", "fadeOut"],
+                        dismiss: {
+                            duration: 5000,
+                            onScreen: true
+                        }
+                    });
                 })
             }
 
         })
     }
     render() {
-        if (this.state.loading) {
-            return <div>Loading</div>
+        if (this.state.loading || !this.props.connected) {
+            return <div className="pageloader is-active is-primary"><span className="title">Conectando...</span></div>
         }
         const { stockList } = this.props
         return <div
@@ -832,7 +938,7 @@ class Home extends Component {
                                         quantity: ''
                                     }))}
                                     className={`is-primary is-outlined is-medium is-fullwidth`}
-                                    dangerouslySetInnerHTML={{ __html: `Vender por <b style="margin:0px 5px">${stockPrice.toFixed(2)}</b> ${currency} C/U` }}
+                                    dangerouslySetInnerHTML={{ __html: `Vender por <b style="margin:0px 5px">${parseFloat(stockPrice).toFixed(2)}</b> ${currency} C/U` }}
                                 />
                                 <Button
                                     onClick={() => this.setState({
@@ -865,11 +971,34 @@ class Home extends Component {
                             alignItems: 'center'
                         }}
                     >
-                        <h1
+                        {this.props.news.length === 0 && <h1
                             style={{
                                 fontSize: '2rem'
                             }}
-                        >Aquí se mostrarán las noticias.</h1>
+                        >Aquí se mostrarán las noticias.</h1>}
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                padding: 20,
+                                // overflow: 'hidden',
+                                overflowY: 'scroll',
+                                maxHeight: '100%'
+                            }}
+                        >
+
+                            {this.props.news.map((n, i) => {
+                                return <div
+                                    key={`_${i}`}
+                                    style={{
+                                        padding: 15,
+                                        margin: 10
+                                    }}
+                                >
+                                    {n}
+                                </div>
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -887,6 +1016,8 @@ class Home extends Component {
                 stockToSell={this.state.stockToSell}
                 stockList={this.props.stockList}
                 onSubmitSell={this.onSubmitSell}
+                comission={this.props.comission}
+                exchangeRate={this.props.exchangeRate}
             />
             <SideBar
                 error={this.state.errorBuy}
@@ -901,6 +1032,16 @@ class Home extends Component {
                 stockToBuy={this.state.stockToBuy}
                 stockList={this.props.stockList}
                 onSubmitBuy={this.onSubmitBuy}
+                comission={this.props.comission}
+                exchangeRate={this.props.exchangeRate}
+            />
+            <Transactions
+                stockList={this.props.stockList}
+                transactions={this.props.transactions}
+                showTransactions={this.state.showTransactions}
+                onClose={() => this.setState({ showTransactions: false })}
+                comission={this.props.comission}
+                exchangeRate={this.props.exchangeRate}
             />
         </div>
     }
@@ -912,13 +1053,19 @@ const mapStateToProps = state => {
         stockList: stocksSelector(state),
         userUUID: state.app.userUUID,
         balance: state.app.balance,
+        comission: state.app.comission,
+        exchangeRate: state.app.exchangeRate,
         holdings,
+        connected: state.stocks.connected,
+        transactions: state.stocks.transactions,
+        news: state.app.news,
     }
 }
 
 export default connect(mapStateToProps, {
     setStocks,
     upsertHolding,
+    setTransactions,
     logInUser,
     setHoldings,
 })(Home);
