@@ -85,11 +85,13 @@ class RouterApp extends React.Component {
             this.props.logInUser(data.data.user)
         // if (data.data.stocks)
         this.props.setStocks(data.data.stocks)
-        this.props.addNews({
-            time: 'old',
-            news: data.data.oldNews
+        if (Object.keys(data.data.oldNews).length > 0) {
+            this.props.addNews({
+                time: 'old',
+                news: data.data.oldNews
 
-        })
+            })
+        }
 
         const socket = io.connect(SOCKET_URL, {
             transports: ["websocket"],
