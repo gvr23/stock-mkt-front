@@ -18,6 +18,7 @@ export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
         case ADD_NEWS:
             if (payload.time === 'old') {
+                // console.log({ payload })
                 return {
                     ...state,
                     news: {
