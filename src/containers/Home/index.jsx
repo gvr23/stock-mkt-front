@@ -1,23 +1,24 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
-import { setStocks, logInUser, setHoldings, upsertHolding, setTransactions } from '../../actions'
+import {setStocks, logInUser, setHoldings, upsertHolding, setTransactions} from '../../actions'
 import Button from '../../components/Button';
 import Icon from '../../components/Icon';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
-import { numberWithCommas } from '../../utils';
-import { stocksSelector } from '../../selectors/stocks';
-import { store } from 'react-notifications-component'
+import {numberWithCommas} from '../../utils';
+import {stocksSelector} from '../../selectors/stocks';
+import {store} from 'react-notifications-component'
 
 
 class Transactions extends Component {
     constructor(props) {
         super(props)
     }
+
     render() {
-        const { showTransactions } = this.props;
+        const {showTransactions} = this.props;
         return <>
             <div
                 onClick={this.props.onClose}
@@ -29,14 +30,15 @@ class Transactions extends Component {
                 }}
                 className={`_transactions_bottom${this.props.showTransactions ? ' show' : ''}`}
             >
-                <nav id="middle-navbar" style={{ position: 'absolute', top: 0, left: 0, width: '100%' }} className="navbar is-primary" role="navigation" aria-label="main navigation">
+                <nav id="middle-navbar" style={{position: 'absolute', top: 0, left: 0, width: '100%'}}
+                     className="navbar is-primary" role="navigation" aria-label="main navigation">
                     <div className="navbar-brand">
                         <a className="navbar-item" href="#">
                             <h1
                                 className="has-text-weight-bold"
                             >
                                 Transacciones realizadas
-                </h1>
+                            </h1>
                         </a>
 
                         <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
@@ -81,9 +83,12 @@ class Transactions extends Component {
                                 <p>Estado: <b>{transaction.status}</b></p>
                                 <p>Moneda: <b>{transaction.stock.currency == 'USD' ? 'Dólares' : 'Soles'}</b></p>
                                 <p>Cantidad de acciones: <b>{transaction.quantity}</b></p>
-                                <p>Precio al momento de {isBuy ? 'compra' : 'venta'}: <b>{transactionPrice.toFixed(2)} {transaction.stock.currency}</b></p>
-                                <hr />
-                                <p>Monto {isBuy ? 'pagado' : 'recibido'}: <b>{numberWithCommas((transaction.quantity * transactionPrice).toFixed(2))} {transaction.stock.currency}</b></p>
+                                <p>Precio al momento
+                                    de {isBuy ? 'compra' : 'venta'}: <b>{transactionPrice.toFixed(2)} {transaction.stock.currency}</b>
+                                </p>
+                                <hr/>
+                                <p>Monto {isBuy ? 'pagado' : 'recibido'}: <b>{numberWithCommas((transaction.quantity * transactionPrice).toFixed(2))} {transaction.stock.currency}</b>
+                                </p>
 
 
                                 <div className={`${isBuy ? 'buy' : 'sell'}`}>
@@ -99,7 +104,7 @@ class Transactions extends Component {
                                     <Button
                                         className={`is-primary is-outlined${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? ' is-win' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? ' is-lose' : ' is-draw'}`}
                                         text={<span><Icon
-                                            style={{ marginRight: 15 }}
+                                            style={{marginRight: 15}}
                                             name={`${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? 'arrow-circle-up' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? 'arrow-circle-down' : 'equals'}`}
                                         />{`      VA: ${price.toFixed(2)}`}</span>}
                                     />
@@ -111,6 +116,34 @@ class Transactions extends Component {
             </div>
         </>
     }
+}
+
+const Modal = ({children, closeModal, modalState, title}) => {
+    if (!modalState) {
+        return null;
+    }
+
+    return (
+        <div className="modal is-active">
+            <div className="modal-background" onClick={closeModal}/>
+            <div className="modal-card">
+                <header className="modal-card-head" style={{backgroundColor: '#371E9E'}}>
+                    <p className="modal-card-title" style={{color: 'white'}}>{title}</p>
+                    <button className="delete" onClick={closeModal}/>
+                </header>
+                <section className="modal-card-body">
+                    <div className="content">
+                        {children}
+                    </div>
+                </section>
+                <footer className="modal-card-foot" style={{backgroundColor: '#371E9E'}}>
+                    <div className="control" style={{marginRight: '2%'}}>
+                        <button onClick={closeModal} className="button is-danger">Exit</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    );
 }
 
 class LeftSideBar extends Component {
@@ -126,8 +159,9 @@ class LeftSideBar extends Component {
     componentDidMount() {
         console.log('MOUNTED')
     }
+
     changeState(newState) {
-        this.setState({ ...newState })
+        this.setState({...newState})
     }
 
     reset(onlyBtn = false) {
@@ -141,18 +175,21 @@ class LeftSideBar extends Component {
             isSelling: false,
         })
     }
+
     getQuantity() {
         return parseInt(this.state.quantity)
     }
+
     getTotal() {
-        const { stockList, stockToSell } = this.props
+        const {stockList, stockToSell} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
         return totalAmount
     }
+
     render() {
-        const { show, stockToSell, stockList, balance } = this.props
+        const {show, stockToSell, stockList, balance} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
@@ -183,7 +220,9 @@ class LeftSideBar extends Component {
                 >
                     <Icon
                         onClick={() => {
-                            this.setState({ error: undefined }, () => { this.props.onClose() })
+                            this.setState({error: undefined}, () => {
+                                this.props.onClose()
+                            })
                         }}
                         className="fa-2x"
                         name="times"
@@ -198,7 +237,7 @@ class LeftSideBar extends Component {
                     {stockToSell !== undefined && <div
                         className=""
                     >
-                        <div className="_stock is-full-width"   >
+                        <div className="_stock is-full-width">
                             <div
                                 className="left"
                             >
@@ -229,8 +268,7 @@ class LeftSideBar extends Component {
 
 
                     {stockToSell !== undefined && <form>
-                        <br />
-
+                        <br/>
 
 
                         <p
@@ -239,14 +277,16 @@ class LeftSideBar extends Component {
 
                             Actualizada por última vez el {stockList[stockToSell]["timestamp"]}
                         </p>
-                        <br />
+                        <br/>
                         <div
                             className="_holdings"
                         >
-                            Tienes <b>{this.props.holdings[stockToSell]}</b> acciones valorizadas en <b>{numberWithCommas((this.props.holdings[stockToSell] * stockList[stockToSell].price).toFixed(2))} {stockList[stockToSell].currency}</b> para vender
+                            Tienes <b>{this.props.holdings[stockToSell]}</b> acciones valorizadas
+                            en <b>{numberWithCommas((this.props.holdings[stockToSell] * stockList[stockToSell].price).toFixed(2))} {stockList[stockToSell].currency}</b> para
+                            vender
                         </div>
 
-                        <br />
+                        <br/>
                         <Input
                             onChange={(e) => this.setState({
                                 error: undefined,
@@ -279,7 +319,8 @@ class LeftSideBar extends Component {
                             readOnly
 
                             value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(actionValue / this.props.exchangeRate).toFixed(2)} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
                         />
@@ -288,7 +329,8 @@ class LeftSideBar extends Component {
                             readOnly
 
                             value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(comission.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(comission / this.props.exchangeRate).toFixed(2)} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
                         />
@@ -296,19 +338,21 @@ class LeftSideBar extends Component {
                         <Input
                             readOnly
                             value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2)) + (stockList[stockToSell]["currency"] === 'PEN' ? (` >>  ${(totalAmount / this.props.exchangeRate).toFixed(2)} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
 
                         />
-                        <hr />
+                        <hr/>
                         <small>Nuevo balance al finalizar venta</small>
                         <Input
                             className={this.state.quantity > this.props.holdings[stockToSell] ? 'error' : 'success'}
                             readOnly
                             // value={stockList[stockToSell]["currency"] + '  ' + numberWithCommas((newBalance).toFixed(2))}
                             value={'USD' + '  ' + numberWithCommas((stockList[stockToSell]["currency"] === 'PEN' ? newBalancePen : newBalance).toFixed(2))}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                         />
 
@@ -344,6 +388,7 @@ class SideBar extends Component {
             isBuying: false,
         }
     }
+
     reset(onlyBtn = false) {
         if (onlyBtn) {
             return this.setState({
@@ -355,18 +400,21 @@ class SideBar extends Component {
             isBuying: false,
         })
     }
+
     getQuantity() {
         return parseInt(this.state.quantity)
     }
+
     getTotal() {
-        const { stockList, stockToBuy } = this.props
+        const {stockList, stockToBuy} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
         return totalAmount
     }
+
     render() {
-        const { show, stockToBuy, stockList, balance } = this.props
+        const {show, stockToBuy, stockList, balance} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
@@ -409,7 +457,7 @@ class SideBar extends Component {
                     {stockToBuy !== undefined && <div
                         className=""
                     >
-                        <div className="_stock is-full-width"   >
+                        <div className="_stock is-full-width">
                             <div
                                 className="left"
                             >
@@ -432,21 +480,21 @@ class SideBar extends Component {
                         </div>
                     </div>}
                     {stockToBuy !== undefined && <form>
-                        <br />
+                        <br/>
                         <p
                             className="has-text-centered is-fullwidth"
                         >
                             Actualizada por última vez el {stockList[stockToBuy]["timestamp"]}
                         </p>
                         {stockList[stockToBuy]["currency"] === 'PEN' ? <>
-                            <br />
+                            <br/>
                             <small>Tipo de cambio</small>
                             <Input
                                 editable={"false"}
                                 disabled
                                 value={`${this.props.exchangeRate} PEN`}
                             />
-                        </> : <br />}
+                        </> : <br/>}
                         <Input
                             onChange={(e) => this.setState({
                                 quantity: e.target.value.replace(/[^0-9]+/g, '')
@@ -459,7 +507,8 @@ class SideBar extends Component {
                         <Input
                             readOnly
                             value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(actionValue.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >>  ${(actionValue / this.props.exchangeRate).toFixed(2)} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
                         />
@@ -467,7 +516,8 @@ class SideBar extends Component {
                         <Input
                             readOnly
                             value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(comission.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >> ${(comission / this.props.exchangeRate).toFixed(2)} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
                         />
@@ -475,18 +525,20 @@ class SideBar extends Component {
                         <Input
                             readOnly
                             value={stockList[stockToBuy]["currency"] + '  ' + numberWithCommas(totalAmount.toFixed(2)) + (stockList[stockToBuy]["currency"] === 'PEN' ? (` >> ${numberWithCommas((totalAmount / this.props.exchangeRate).toFixed(2))} USD`) : '')}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
                             noPadding
 
                         />
-                        <hr />
+                        <hr/>
                         <small>Nuevo balance al finalizar compra</small>
                         <Input
                             className={((stockList[stockToBuy]["currency"] === 'USD' && newBalance < 0) || (stockList[stockToBuy]["currency"] === 'PEN') && newBalancePen < 0) ? 'error' : 'success'}
                             readOnly
                             value={'USD' + '  ' + numberWithCommas((stockList[stockToBuy]["currency"] === 'PEN' ? newBalancePen : newBalance).toFixed(2))}
-                            onChange={() => { }}
+                            onChange={() => {
+                            }}
                             disabled
 
                         />
@@ -513,6 +565,7 @@ class SideBar extends Component {
         </>
     }
 }
+
 class Home extends Component {
     constructor(props) {
         super(props)
@@ -524,13 +577,16 @@ class Home extends Component {
             stockToSell: undefined,
             showSell: false,
             sellAll: false,
-            showTransactions: false
+            showTransactions: false,
+            modalState: false
         }
+        this.toggleModal = this.toggleModal.bind(this);
         this.onSubmitBuy = this.onSubmitBuy.bind(this)
         this.onSubmitSell = this.onSubmitSell.bind(this)
     }
+
     async componentDidMount() {
-        const { data } = await Axios.post(API_URL, {
+        const {data} = await Axios.post(API_URL, {
             query: `{
                 transactions(user_uuid: "${this.props.userUUID}") {
                     uuid
@@ -592,6 +648,14 @@ class Home extends Component {
         })
     }
 
+    toggleModal() {
+        this.setState((prev, props) => {
+            const newState = !prev.modalState;
+
+            return {modalState: newState};
+        });
+    }
+
     onSubmitBuy(e) {
         // e.preventDefault()
         return this.setState({
@@ -615,14 +679,14 @@ class Home extends Component {
                     errorBuy: 'Minima compra: 1500.00 USD o 5025.00 PEN'
                 })
             }
-            const { balance } = this.props
+            const {balance} = this.props
             if ((currency === 'USD' && balance < total) || (currency === 'PEN' && balance < (total / this.props.exchangeRate))) {
                 this.sideBar.reset(true)
                 return this.setState({
                     errorBuy: 'No tienes fondos suficientes para esta compra'
                 })
             }
-            const { data } = await Axios.post(API_URL, {
+            const {data} = await Axios.post(API_URL, {
                 query: `mutation{
                     buyOrSell(
                       user_uuid: "${this.props.userUUID}"
@@ -683,15 +747,16 @@ class Home extends Component {
         return Object.keys(stockList).map((stockKey) => {
             // const stock = stockList[stockKey]
             return <Card
-                onBuy={() => this.setState({ showBuy: true, stockToBuy: stockKey })}
+                onBuy={() => this.setState({showBuy: true, stockToBuy: stockKey})}
                 key={stockKey}
                 item={stockList[stockKey]}
+                showNews={this.toggleModal}
             />
         })
     }
 
     onSubmitSell(e) {
-        this.leftSideBar.setState({ error: undefined }, async () => {
+        this.leftSideBar.setState({error: undefined}, async () => {
             const quantity = this.leftSideBar.getQuantity()
             if (isNaN(quantity) || quantity == 0) {
                 this.leftSideBar.reset(true)
@@ -723,7 +788,7 @@ class Home extends Component {
                 })
             }
 
-            const { data } = await Axios.post(API_URL, {
+            const {data} = await Axios.post(API_URL, {
                 query: `mutation{
                     buyOrSell(
                       user_uuid: "${this.props.userUUID}"
@@ -779,11 +844,12 @@ class Home extends Component {
 
         })
     }
+
     render() {
         if (this.state.loading || !this.props.connected) {
             return <div className="pageloader is-active is-primary"><span className="title">Conectando...</span></div>
         }
-        const { stockList } = this.props
+        const {stockList} = this.props
         return <div
             style={{
                 display: 'flex',
@@ -818,14 +884,15 @@ class Home extends Component {
                     paddingTop: 40
                 }}
             >
-                <nav id="middle-navbar" style={{ position: 'absolute', top: 0, left: 0, width: '100%' }} className="navbar is-primary" role="navigation" aria-label="main navigation">
+                <nav id="middle-navbar" style={{position: 'absolute', top: 0, left: 0, width: '100%'}}
+                     className="navbar is-primary" role="navigation" aria-label="main navigation">
                     <div className="navbar-brand">
                         <a className="navbar-item" href="#">
                             <h1
                                 className="has-text-weight-bold"
                             >
                                 Portafolio de usuario
-                        </h1>
+                            </h1>
                         </a>
 
                         <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false">
@@ -855,10 +922,11 @@ class Home extends Component {
                                         borderColor: '#fff'
                                     }}
                                     className="is-primary is-outlined"
-                                    text={<span>USD <b>{numberWithCommas(Object.keys(this.props.holdings).reduce((prev, curr) => {
-                                        prev += stockList[curr]["price"] * this.props.holdings[curr]
-                                        return prev
-                                    }, 0).toFixed(2))}</b> en valor de acciones</span>}
+                                    text={
+                                        <span>USD <b>{numberWithCommas(Object.keys(this.props.holdings).reduce((prev, curr) => {
+                                            prev += stockList[curr]["price"] * this.props.holdings[curr]
+                                            return prev
+                                        }, 0).toFixed(2))}</b> en valor de acciones</span>}
                                 />
                             </div>
                         </div>
@@ -909,7 +977,8 @@ class Home extends Component {
                                             fontWeight: 600
                                         }}
                                     > {stockObj["companyname"]}</strong>
-                                    <small className="has-text-centered">Tienes <b style={{ fontWeight: 700 }}>{quantity}</b> acciones de esta empresa.</small>
+                                    <small className="has-text-centered">Tienes <b
+                                        style={{fontWeight: 700}}>{quantity}</b> acciones de esta empresa.</small>
                                 </div>
                                 <div className="right">
                                     {/* <p> {stockPrice.toFixed(2)} {stockObj["currency"]}</p> */}
@@ -917,7 +986,8 @@ class Home extends Component {
                                         className={`fa-3x${changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
                                         name={changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
                                     />
-                                    <span className={`value${changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{changePercent} % </span>
+                                    <span
+                                        className={`value${changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{changePercent} % </span>
                                 </div>
                             </div>
                             <div
@@ -938,19 +1008,19 @@ class Home extends Component {
                                         quantity: ''
                                     }))}
                                     className={`is-primary is-outlined is-medium is-fullwidth`}
-                                    dangerouslySetInnerHTML={{ __html: `Vender por <b style="margin:0px 5px">${parseFloat(stockPrice).toFixed(2)}</b> ${currency} C/U` }}
+                                    dangerouslySetInnerHTML={{__html: `Vender por <b style="margin:0px 5px">${parseFloat(stockPrice).toFixed(2)}</b> ${currency} C/U`}}
                                 />
                                 <Button
                                     onClick={() => this.setState({
                                         showSell: true,
                                         stockToSell: stockUUID,
                                         sellAll: true,
-                                    }, _ => this.leftSideBar.setState({ quantity: `${quantity}` }))}
+                                    }, _ => this.leftSideBar.setState({quantity: `${quantity}`}))}
                                     style={{
                                         marginTop: 10
                                     }}
                                     className={`${changePercent > 0 ? 'is-success' : 'is-danger'} is-medium is-fullwidth`}
-                                    dangerouslySetInnerHTML={{ __html: `Todo por <b style="margin:0px 5px">${numberWithCommas((stockPrice * quantity).toFixed(2), true) + ' '}</b> ${currency}` }}
+                                    dangerouslySetInnerHTML={{__html: `Todo por <b style="margin:0px 5px">${numberWithCommas((stockPrice * quantity).toFixed(2), true) + ' '}</b> ${currency}`}}
                                 />
                             </div>
                         </div>
@@ -1039,16 +1109,25 @@ class Home extends Component {
                 stockList={this.props.stockList}
                 transactions={this.props.transactions}
                 showTransactions={this.state.showTransactions}
-                onClose={() => this.setState({ showTransactions: false })}
+                onClose={() => this.setState({showTransactions: false})}
                 comission={this.props.comission}
                 exchangeRate={this.props.exchangeRate}
             />
+
+            <Modal
+                closeModal={this.toggleModal}
+                modalState={this.state.modalState}
+                title="Noticia"
+            >
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias deserunt doloremque ea harum hic
+                    iure neque odio quod velit. Amet dolore eius et eveniet nam, nesciunt quo quos unde?</p>
+            </Modal>
         </div>
     }
 }
 
 const mapStateToProps = state => {
-    const { holdings } = state.stocks
+    const {holdings} = state.stocks
     return {
         stockList: stocksSelector(state),
         userUUID: state.app.userUUID,
