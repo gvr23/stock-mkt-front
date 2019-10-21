@@ -850,10 +850,26 @@ class Home extends Component {
     getNewsFromOneStock = (stockUUID) => {
         let news = [];
         Object.keys(this.props.news).reduce((accumulator, key) => {
-            news.push({key, section: true});
-            this.props.news[key].filter(item => {
-                if (item.stockUUID === stockUUID) news.push(item);
+            let section = true;
+            this.props.news[key].filter((item, i) => {
+                if (item.stockUUID === stockUUID) {
+                    if (section) {
+                        news.push(<article className="tile is-rounded" style={{ marginBottom: '3%', backgroundColor: '#6543C8', padding: '2%' }}>
+                            <p className="subtitle" style={{ color: 'white' }}>{(String(key).toUpperCase() === 'OLD') ? 'NOTICIAS ANTIGUAS' : String(key).toUpperCase().replace(/_/gi, ' ')}</p>
+                        </article>);
+
+
+                        section = false;
+                    }
+                    news.push(<article className="message is-link" style={{ marginBottom: '1.5%' }}>
+                        <div className="message-body">
+                            {item.new}
+                        </div>
+                    </article>);
+                }
+
             })
+            section = true;
         }, []);
         /*this.props.news.old.map(item => {
             console.log('this is the item, ', item.stockUUID)
@@ -881,7 +897,6 @@ class Home extends Component {
     }
 
     render() {
-        console.log(this.props.news)
         if (this.state.loading || !this.props.connected) {
             return <div className="pageloader is-active is-primary"><span className="title">Conectando...</span></div>
         }
@@ -1156,22 +1171,10 @@ class Home extends Component {
                 title="Noticias"
             >
                 {
-                    this.state.news.map(item => {
-                        if (item.section) {
-                            return <h3>{item.key}</h3>
-                        } else {
-                            return <article className="message is-info">
-                                <div className="message-header">
-                                    <p>{item.stockUUID}</p>
-                                </div>
-                                <div className="message-body">
-                                    <p>{item.new}</p>
-                                </div>
-                            </article>
-                        }
-
-
-                    })
+                    (this.state.news.length > 0) ?
+                        this.state.news.map(item => <div>{item}</div>)
+                        :
+                        <p className="message-header">No existen noticias para esta acción</p>
                 }
             </Modal>
         </div>
