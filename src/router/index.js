@@ -123,7 +123,9 @@ class RouterApp extends React.Component {
             this.props.updatePrice(data.values)
         })
         socket.on('new.new', (data) => {
-            this.props.addNews(data)
+            if (data.news.length > 0) {
+                this.props.addNews(data)
+            }
             // this.props.updatePrice(data)
         })
 
