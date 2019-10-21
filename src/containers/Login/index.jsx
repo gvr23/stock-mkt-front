@@ -146,17 +146,10 @@ class Login extends React.Component {
                         </div>
                     </div>
                     <div className="field">
-                        <label className="label">Password</label>
+                        <label className="label">Contraseña</label>
                         <div className="control">
-                            <input className="input" style={{borderWidth: 1, borderColor: '#000'}} type="email"
+                            <input className="input" style={{borderWidth: 1, borderColor: '#000'}} type="text"
                                    placeholder="contraseña"/>
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Password</label>
-                        <div className="control">
-                            <input className="input" style={{borderWidth: 1, borderColor: '#000'}} type="email"
-                                   placeholder="repita contraseña"/>
                         </div>
                     </div>
                 </Modal>
