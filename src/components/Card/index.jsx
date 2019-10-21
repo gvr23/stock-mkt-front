@@ -37,10 +37,10 @@ const Card = (props) => {
                     }}
                 > */}
                 <Icon
-                    className={`fa-2x${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
-                    name={item.changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
+                    className={`fa-2x${item.changePercent === 0 ? ' has-text-primary' : item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
+                    name={item.changePercent === 0 ? 'minus-circle' : item.changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
                 />
-                <p className={`value${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{item.changePercent} % </p>
+                <p className={`value${item.changePercent === 0 ? ' has-text-primary' : item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{item.changePercent} % </p>
                 {/* </div> */}
                 {/* </div> */}
             </div>

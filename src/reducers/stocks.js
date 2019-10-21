@@ -72,31 +72,31 @@ export default (state = INITIAL_STATE, { payload, type }) => {
         }, {})
       }
     case UPDATE_STOCK_PRICE:
+      console.log({ payload })
       const { stockList } = state
-      console.log(stockList[payload.stock_uuid])
-
-      stockList[payload.stock_uuid] = {
-        ...stockList[payload.stock_uuid],
-        price: payload.close_price,
-        timestamp: payload.timestamp,
-        change: payload.change_price,
-        changePercent: payload.change_percent,
-        priceUUID: payload.uuid,
-        history: [
-          ...stockList[payload.stock_uuid].history,
-          {
-            "uuid": payload.uuid,
-            "close_price": payload.close_price,
-            "timestamp": payload.timestamp,
-            "change_price": payload.change_price,
-            "change_percent": payload.change_percent
-          }
-        ]
-      }
+      const newStockList = Object.keys(stockList).reduce((prev, stockKey) => {
+        const stockTmp = payload[stockKey] ? payload[stockKey] : stockList[stockKey]
+        // console.log('payload[stockKey]', payload[stockKey])
+        // console.log({ stockTmp })
+        prev[stockKey] = {
+          name: stockList[stockKey].name,
+          description: stockList[stockKey].description,
+          companyname: stockList[stockKey].companyname,
+          currency: stockList[stockKey].currency,
+          price: parseFloat(stockTmp.close_price || stockTmp.price),
+          priceUUID: stockTmp.uuid,
+          timestamp: stockTmp.timestamp,
+          change: parseFloat(stockTmp.change_price || stockTmp.change),
+          changePercent: parseFloat(stockTmp.change_percent || stockTmp.changePercent),
+          history: [],
+          companylogo: stockList[stockKey].companylogo
+        }
+        return prev
+      }, {})
       return {
         ...state,
         stockList: {
-          ...stockList
+          ...newStockList
         }
       }
     default:
