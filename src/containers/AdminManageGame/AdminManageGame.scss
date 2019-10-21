@@ -5,7 +5,49 @@
     padding: 20px;
   }
   .right {
-    flex: 2 1;
+    flex: 3 1;
     padding: 30px;
+  }
+  #is {
+    height: 1%;
+  }
+  aside {
+    background-color: #1A3CAB;
+/*    width: 22.8%;*/
+  }
+  .menu {
+    display: flex;
+    flex-direction: column;
+  }
+  .menu p {
+    color: white;
+  }
+  .menu-footer {
+    display: flex;
+    background-color: #371E9E;
+    flex-direction: row;
+    height: 20%;
+  }
+  .btn {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+  }
+  #main {
+    margin-right: 4%;
+    margin-left: 4%;
+    width: 139%;
+  }
+  #row {
+    width: 320px;
+  }
+  #add {
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2.9%;
+    margin-right: 2.9%;
   }
 }
