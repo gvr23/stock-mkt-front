@@ -10,19 +10,27 @@ const INITIAL_STATE = {
     status: null,
     comission: null,
     exchangeRate: null,
-    news: []
+    news: {}
 
 }
 
 export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
         case ADD_NEWS:
+            if (payload.time === 'old') {
+                return {
+                    ...state,
+                    news: {
+                        old: payload.news
+                    }
+                }
+            }
             return {
                 ...state,
-                news: [
-                    ...(state.news || []),
-                    payload
-                ]
+                news: {
+                    [payload.time]: payload.news,
+                    ...state.news
+                }
             }
         case SET_STATUS:
             return {

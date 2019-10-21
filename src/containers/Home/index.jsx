@@ -779,6 +779,24 @@ class Home extends Component {
 
         })
     }
+
+    renderNews() {
+        const toRender = []
+        Object.keys(this.props.news).map((newKey) => {
+            toRender.push(<div className="_new_group">{newKey}</div>)
+            this.props.news[newKey].forEach((newObj) => {
+                toRender.push(<div
+                    className="_new_notice"
+                >
+                    <p>{newObj.new}</p>
+                </div>)
+            })
+        })
+
+        return toRender
+
+    }
+
     render() {
         if (this.state.loading || !this.props.connected) {
             return <div className="pageloader is-active is-primary"><span className="title">Conectando...</span></div>
@@ -986,8 +1004,8 @@ class Home extends Component {
                                 maxHeight: '100%'
                             }}
                         >
-
-                            {this.props.news.map((n, i) => {
+                            {this.renderNews()}
+                            {/* {this.props.news.map((n, i) => {
                                 return <div
                                     key={`_${i}`}
                                     style={{
@@ -997,7 +1015,7 @@ class Home extends Component {
                                 >
                                     {n}
                                 </div>
-                            })}
+                            })} */}
                         </div>
                     </div>
                 </div>

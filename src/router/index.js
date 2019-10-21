@@ -51,6 +51,10 @@ class RouterApp extends React.Component {
                     status
                 }
             }
+            oldNews {
+                new
+                stockUUID
+            }
             stocks {
                 uuid
                 name
@@ -81,7 +85,11 @@ class RouterApp extends React.Component {
             this.props.logInUser(data.data.user)
         // if (data.data.stocks)
         this.props.setStocks(data.data.stocks)
+        this.props.addNews({
+            time: 'old',
+            news: data.data.oldNews
 
+        })
 
         const socket = io.connect(SOCKET_URL, {
             transports: ["websocket"],
@@ -110,24 +118,16 @@ class RouterApp extends React.Component {
             this.props.updateBalance(parseFloat(data.toFixed(2)))
         })
         socket.on('new.stock.values', (data) => {
-            console.log('newstockvalues=>')
-            console.log({ data })
             this.props.updatePrice(data.values)
         })
         socket.on('new.new', (data) => {
-            console.log('newsss=>')
-            console.log({ data })
+            this.props.addNews(data)
             // this.props.updatePrice(data)
         })
 
         socket.on('upsert.holding', (data) => {
             this.props.upsertHolding(data)
         })
-        socket.on('show.new', (data) => {
-            // console.log({ data })
-            this.props.addNews(data.new)
-        })
-
 
     }
     render() {
