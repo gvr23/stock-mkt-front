@@ -75,10 +75,6 @@ class RouterApp extends React.Component {
               }
         }`
         })
-        // console.log({ stocks: data.data })
-        // if (data.data.user)
-        console.log(data.data)
-        console.log(this.props.userUUID)
         if (!this.props.userUUID)
             this.props.logInUser(data.data.user || {})
         else
@@ -113,8 +109,15 @@ class RouterApp extends React.Component {
         socket.on('new.balance', (data) => {
             this.props.updateBalance(parseFloat(data.toFixed(2)))
         })
-        socket.on('new.stock.value', (data) => {
-            this.props.updatePrice(data)
+        socket.on('new.stock.values', (data) => {
+            console.log('newstockvalues=>')
+            console.log({ data })
+            this.props.updatePrice(data.values)
+        })
+        socket.on('new.new', (data) => {
+            console.log('newsss=>')
+            console.log({ data })
+            // this.props.updatePrice(data)
         })
 
         socket.on('upsert.holding', (data) => {
