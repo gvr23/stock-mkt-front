@@ -145,6 +145,7 @@ class Login extends React.Component {
                 >
                     <h1
                         className="is-size-4 title has-text-centered"
+                        style={{ color: 'white' }}
                     >
                         Ingresar
                     </h1>
@@ -173,12 +174,13 @@ class Login extends React.Component {
                             onClick={this.onClick}
                             text={"Aceptar"}
                             className={"is-primary"}
+                            style={{ backgroundColor: '#371E9E' }}
                             isFluid
                         />
                     </div>
                     <a
                         onClick={this.toggleModal}
-                        style={{display: 'flex', alignSelf: 'flex-end'}}
+                        style={{display: 'flex', alignSelf: 'flex-end' }}
                     >Registrarse</a>
                 </form>
 
