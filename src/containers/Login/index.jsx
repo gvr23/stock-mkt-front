@@ -16,11 +16,16 @@ class Login extends React.Component {
             errorPass: undefined,
             user: '',
             pass: '',
-            modalState: false
+            modalState: false,
+            errorGroupName: undefined,
+            errorGroupPassword: undefined,
+            newGroupName: '',
+            newGroupPassword: ''
         }
         this.toggleModal = this.toggleModal.bind(this);
-        this.onClick = this.onClick.bind(this)
-        this.onChange = this.onChange.bind(this)
+        this.onClick = this.onClick.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onRegister = this.onRegister.bind(this);
     }
 
     toggleModal() {
@@ -80,13 +85,57 @@ class Login extends React.Component {
         })
     }
 
+    onRegister = async () => {
+        const {newGroupName, newGroupPassword} = this.state;
+        const that = this;
+        this.setState({errorGroupName: undefined, errorGroupPassword: undefined});
+
+        if (newGroupName.length <= 0) {
+            return this.setState({
+                errorGroupName: 'Debes registrar un nombre',
+            })
+        }
+        if (newGroupPassword.length <= 0) {
+            return this.setState({
+                errorGroupPassword: 'Debes registrar una contraseña'
+            })
+        }
+        await axios.post(API_URL, {
+            query: `mutation{
+                        createUser(username: "${newGroupName}" password: "${newGroupPassword}") {
+                            username
+                            uuid
+                        }
+                    }`
+        })
+            .then(rep => {
+                if(rep.status === 200){
+                    if (rep.data.errors) {
+                        const key = 'errorGroupName';
+                        const err = 'El nombre ingresado ya existe';
+                        return this.setState({
+                            [key]: err
+                        })
+                    } else {
+                        this.toggleModal();
+                        that.setState({ newGroupName: '', newGroupPassword: '' });
+                    }
+                }
+            })
+            .catch(er => console.log('this is the err, ', er));
+    }
+
     render() {
         const {
             errorUser,
             errorPass,
             user,
             pass,
-        } = this.state
+            errorGroupName,
+            errorGroupPassword,
+            newGroupName,
+            newGroupPassword
+        } = this.state;
         return (
             <div
                 className="_login_container"
@@ -136,21 +185,32 @@ class Login extends React.Component {
                 <Modal
                     closeModal={this.toggleModal}
                     modalState={this.state.modalState}
+                    onPress={this.onRegister}
                     title="Activar cuenta"
                 >
                     <div className="field">
-                        <label className="label">Nombre</label>
-                        <div className="control">
-                            <input className="input" style={{borderWidth: 1, borderColor: '#000'}} type="text"
-                                   placeholder="Nombre de grupo"/>
-                        </div>
+                        <label className="label" style={{color: '#5D4E75'}}>Nombre</label>
+                        <Input
+                            style={{borderWidth: 1, borderColor: '#371E9E'}}
+                            error={errorGroupName}
+                            autoComplete="group name"
+                            placeholder="Nombre de grupo"
+                            value={newGroupName}
+                            name="newGroupName"
+                            onChange={this.onChange}
+                        />
                     </div>
                     <div className="field">
-                        <label className="label">Contraseña</label>
-                        <div className="control">
-                            <input className="input" style={{borderWidth: 1, borderColor: '#000'}} type="text"
-                                   placeholder="contraseña"/>
-                        </div>
+                        <label className="label" style={{color: '#5D4E75'}}>Contraseña</label>
+                        <Input
+                            style={{borderWidth: 1, borderColor: '#371E9E'}}
+                            error={errorGroupPassword}
+                            autoComplete="password"
+                            placeholder="Contraseña"
+                            value={newGroupPassword}
+                            name="newGroupPassword"
+                            onChange={this.onChange}
+                        />
                     </div>
                 </Modal>
             </div>
@@ -158,7 +218,7 @@ class Login extends React.Component {
     }
 }
 
-const Modal = ({children, closeModal, modalState, title}) => {
+const Modal = ({children, closeModal, modalState, title, onPress}) => {
     if (!modalState) {
         return null;
     }
@@ -167,8 +227,8 @@ const Modal = ({children, closeModal, modalState, title}) => {
         <div className="modal is-active">
             <div className="modal-background" onClick={closeModal}/>
             <div className="modal-card">
-                <header className="modal-card-head" style={{ backgroundColor: '#371E9E' }}>
-                    <p className="modal-card-title" style={{ color: 'white' }}>{title}</p>
+                <header className="modal-card-head" style={{backgroundColor: '#371E9E'}}>
+                    <p className="modal-card-title" style={{color: 'white'}}>{title}</p>
                     <button className="delete" onClick={closeModal}/>
                 </header>
                 <section className="modal-card-body">
@@ -176,13 +236,13 @@ const Modal = ({children, closeModal, modalState, title}) => {
                         {children}
                     </div>
                 </section>
-                <footer className="modal-card-foot" style={{ backgroundColor: '#371E9E' }}>
-                  <div className="control" style={{ marginRight: '2%' }}>
-                    <button onClick={closeModal} className="button is-danger">Cancelar</button>
-                  </div>
-                  <div className="control">
-                    <button className="button is-link">Enviar</button>
-                  </div>
+                <footer className="modal-card-foot" style={{backgroundColor: '#371E9E'}}>
+                    <div className="control" style={{marginRight: '2%'}}>
+                        <button onClick={closeModal} className="button is-danger">Cancelar</button>
+                    </div>
+                    <div className="control">
+                        <button onClick={onPress} className="button is-link">Enviar</button>
+                    </div>
                 </footer>
             </div>
         </div>

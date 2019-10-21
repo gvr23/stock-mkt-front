@@ -138,7 +138,7 @@ const Modal = ({children, closeModal, modalState, title}) => {
                 </section>
                 <footer className="modal-card-foot" style={{backgroundColor: '#371E9E'}}>
                     <div className="control" style={{marginRight: '2%'}}>
-                        <button onClick={closeModal} className="button is-danger">Exit</button>
+                        <button onClick={closeModal} className="button is-danger">Cerrar</button>
                     </div>
                 </footer>
             </div>
@@ -881,11 +881,12 @@ class Home extends Component {
     renderNews() {
         const toRender = []
         Object.keys(this.props.news).map((newKey) => {
-            toRender.push(<div key={newKey} className="_new_group">{newKey}</div>)
+            toRender.push(<div key={newKey} className="message-header notification is-link" style={{ marginTop: '1%', marginBottom: '1%', backgroundColor: '#1A2E8F' }}>{(String(newKey).toUpperCase() === 'OLD') ? 'NOTICIAS ANTIGUAS' : String(newKey).toUpperCase().replace(/_/gi, ' ')}</div>)
             this.props.news[newKey].forEach((newObj, i) => {
                 toRender.push(<div
                     key={`${newKey}-${i}`}
-                    className="_new_notice"
+                    className="message-body notification is-link"
+                    style={{ backgroundColor: '#371E9E' }}
                 >
                     <p>{newObj.new}</p>
                 </div>)

@@ -102,7 +102,7 @@ class AdminRanking extends Component {
       style={{
         flex: '1 1',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column'
       }}
     >
       {this.props.ranking.map((user) => {
@@ -122,28 +122,28 @@ class AdminRanking extends Component {
                 <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p>Balance</p>
                 </div>
-                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.balance)} USD</strong></div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#F4FAFF' }}><strong>{numberWithCommas(user.balance)} USD</strong></div>
               </article>
 
               <article className="message is-link" style={{ flex: 1, marginRight: '1%', height: '5%' }}>
                 <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p>Acciones nacionales</p>
                 </div>
-                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.totals.pen.toFixed(2))} PEN</strong></div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E8EFFF' }}><strong>{numberWithCommas(user.totals.pen.toFixed(2))} PEN</strong></div>
               </article>
 
               <article className="message is-primary" style={{ flex: 1, marginRight: '1%', height: '5%' }}>
                 <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p className="is-size-6">Acciones extranjeras</p>
                 </div>
-                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.totals.usd.toFixed(2))} USD</strong></div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#d4daf7' }}><strong>{numberWithCommas(user.totals.usd.toFixed(2))} USD</strong></div>
               </article>
 
               <article className="message is-success" style={{ flex: 1, height: '5%' }}>
                 <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p>Total</p>
                 </div>
-                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas((user.balance + user.totals.usd + (user.totals.pen / this.props.exchangeRate)).toFixed(2))}</strong></div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#D8F9DA' }}><strong>{numberWithCommas((user.balance + user.totals.usd + (user.totals.pen / this.props.exchangeRate)).toFixed(2))}</strong></div>
               </article>
             </div>
 
