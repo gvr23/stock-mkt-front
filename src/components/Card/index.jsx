@@ -103,7 +103,7 @@ const Card = (props) => {
                     <Button
                         text={<Icon name="fas fa-newspaper fa-1x" />}
                         className="is-primary is-medium"
-                        onClick={props.showNews}
+                        onClick={() => {props.showModal(); props.getNews(props.stockUUID)}}
                         style={{ marginBottom: 5, width: 30, height: 30 }}
                     />
                 </div>
