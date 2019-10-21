@@ -117,19 +117,48 @@ class AdminRanking extends Component {
           <div
             className="content"
           >
-            <div
-              className="left"
-            >
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flex: 4 }}>
+              <article className="message is-info" style={{ flex: 1, marginRight: '1%', height: '5%' }}>
+                <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p>Balance</p>
+                </div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.balance)} USD</strong></div>
+              </article>
+
+              <article className="message is-link" style={{ flex: 1, marginRight: '1%', height: '5%' }}>
+                <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p>Acciones nacionales</p>
+                </div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.totals.pen.toFixed(2))} PEN</strong></div>
+              </article>
+
+              <article className="message is-primary" style={{ flex: 1, marginRight: '1%', height: '5%' }}>
+                <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p className="is-size-6">Acciones extranjeras</p>
+                </div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas(user.totals.usd.toFixed(2))} USD</strong></div>
+              </article>
+
+              <article className="message is-success" style={{ flex: 1, height: '5%' }}>
+                <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p>Total</p>
+                </div>
+                <div className="message-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>{numberWithCommas((user.balance + user.totals.usd + (user.totals.pen / this.props.exchangeRate)).toFixed(2))}</strong></div>
+              </article>
             </div>
-            <div
+
+          {/*  <div
               className="right"
             >
               <div
-                style={{
-                  flex: 1,
-                }}
+                style={{flex: 1}}
               >
-
+                <article className="message is-dark">
+                  <div className="message-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <p>Balance</p>
+                  </div>
+                  <div className="message-body"><strong>{numberWithCommas(user.balance)} USD</strong></div>
+                </article>
               </div>
               <div
                 style={{
@@ -139,11 +168,11 @@ class AdminRanking extends Component {
                 <div
                   className="_amounts"
                 >
-                  {/* <table>
+                   <table>
                 <thead>
                 
                 </thead>
-              </table> */}
+              </table>
                   <Button
                     className={`is-danger is-outlined _balance`}
                     text={<p><span>Balance:</span> <strong>{numberWithCommas(user.balance)} USD</strong></p>}
@@ -163,7 +192,7 @@ class AdminRanking extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div>*/}
           </div>
         </div>
       })}

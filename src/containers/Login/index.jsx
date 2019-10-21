@@ -114,6 +114,7 @@ class Login extends React.Component {
               isFluid
             />
           </div>
+          <a style={{ display: 'flex', alignSelf: 'flex-end' }}>Registrarse</a>
         </form>
 
       </div>
