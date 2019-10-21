@@ -51,6 +51,7 @@ class AdminDashboard extends React.Component {
         onBuy={() => this.setState({ showBuy: true, stockToBuy: stockKey })}
         key={stockKey}
         item={stockList[stockKey]}
+        screen={true}
       />
     })
   }

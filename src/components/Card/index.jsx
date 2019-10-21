@@ -8,25 +8,27 @@ import { updown } from '../../assets/images';
 const Card = (props) => {
     const { item } = props;
 
-    return (
-        <div className="_card">
-            <div
-                className="left"
-            >
-                <AdaptableImg src={item.companylogo} />
+    if (props.screen){
+        return (
+            <div className="_card" style={{ width: '28%', height: '28%' }}>
+                <div
+                    className="left"
+                >
+                    <AdaptableImg src={item.companylogo} />
 
-            </div>
-            <div
-                className="center"
-            >
-                <h2>{item.name}</h2>
-                <h3
-                // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
-                >{item.price} {item.currency}</h3>
-                {/* <p
+                </div>
+                <div
+                    className="center"
+                >
+                    <h2>{item.companyname}</h2>
+                    <h4>{item.name}</h4>
+                    <h3
+                        // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
+                    >{item.price} {item.currency}</h3>
+                    {/* <p
                 >{item.description.slice(0, 64)}</p> */}
-                {/* <div> */}
-                {/* <div
+                    {/* <div> */}
+                    {/* <div
                     style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -36,36 +38,79 @@ const Card = (props) => {
                         alignSelf: 'stretch'
                     }}
                 > */}
-                <Icon
-                    className={`fa-2x${item.changePercent === 0 ? ' has-text-primary' : item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
-                    name={item.changePercent === 0 ? 'minus-circle' : item.changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
-                />
-                <p className={`value${item.changePercent === 0 ? ' has-text-primary' : item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{item.changePercent} % </p>
-                {/* </div> */}
-                {/* </div> */}
+                    <Icon
+                        className={`fa-2x${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
+                        name={item.changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
+                    />
+                    <p className={`value${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{item.changePercent} % </p>
+                    {/* </div> */}
+                    {/* </div> */}
+                </div>
+                <span>{item.timestamp}</span>
             </div>
-            <div
-                className="right"
-            >
-                <Button
-                    text={<Icon name="chart-line fa-1x" />}
-                    className="is-primary is-medium"
-                    style={{ marginBottom: 5, width: 30, height: 30 }}
-                />
-                <Button
-                    text={<Icon name="fas fa-shopping-bag fa-1x" />}
-                    className="is-primary is-medium"
-                    onClick={props.onBuy}
-                    style={{ marginBottom: 5, width: 30, height: 30 }}
-                />
-                <Button
-                    text={<Icon name="fas fa-newspaper fa-1x" />}
-                    className="is-primary is-medium"
-                    style={{ marginBottom: 5, width: 30, height: 30 }}
-                />
+        )
+    } else {
+        return (
+            <div className="_card">
+                <div
+                    className="left"
+                >
+                    <AdaptableImg src={item.companylogo} />
+
+                </div>
+                <div
+                    className="center"
+                >
+                    <h2>{item.name}</h2>
+                    <h3
+                        // className={`${item.change > 0 ? 'has-text-success' : 'has-text-danger'}`}
+                    >{item.price} {item.currency}</h3>
+                    {/* <p
+                >{item.description.slice(0, 64)}</p> */}
+                    {/* <div> */}
+                    {/* <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-around',
+                        background: 'red',
+                        alignSelf: 'stretch'
+                    }}
+                > */}
+                    <Icon
+                        className={`fa-2x${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}
+                        name={item.changePercent > 0 ? 'arrow-circle-up' : 'arrow-circle-down'}
+                    />
+                    <p className={`value${item.changePercent > 0 ? ' has-text-success' : ' has-text-danger'}`}>{item.changePercent} % </p>
+                    {/* </div> */}
+                    {/* </div> */}
+                </div>
+                <div
+                    className="right"
+                >
+                    <Button
+                        text={<Icon name="chart-line fa-1x" />}
+                        className="is-primary is-medium"
+                        style={{ marginBottom: 5, width: 30, height: 30 }}
+                    />
+                    <Button
+                        text={<Icon name="fas fa-shopping-bag fa-1x" />}
+                        className="is-primary is-medium"
+                        onClick={props.onBuy}
+                        style={{ marginBottom: 5, width: 30, height: 30 }}
+                    />
+                    <Button
+                        text={<Icon name="fas fa-newspaper fa-1x" />}
+                        className="is-primary is-medium"
+                        onClick={props.showNews}
+                        style={{ marginBottom: 5, width: 30, height: 30 }}
+                    />
+                </div>
+                <span>{item.timestamp}</span>
             </div>
-            <span>{item.timestamp}</span>
-        </div >
+        )
+    }
         // <div className="card">
         //     <div className="card-content">
         //         <div className="media">
@@ -115,7 +160,6 @@ const Card = (props) => {
 
 
         // </div>
-    )
 }
 
 export default Card;
