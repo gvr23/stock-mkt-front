@@ -291,13 +291,20 @@ class AdminManageGame extends React.Component {
                 <br/>
                 <div
                     style={{
-                        display: 'flex',
+                        /*display: 'flex',
                         flexDirection: 'row',
                         flexWrap: 'wrap',
                         justifyContent: 'space-around',
                         overFlowX: 'auto',
                         overflowY: 'hidden',
-                        height: '80%'
+                        maxHeight: '80%'*/
+                        height: '70vh',
+                        margin: '2rem',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr 1fr',
+                        gridTemplateRows: '1fr 1fr 1fr',
+                        overFlowX: 'hidden',
+                        overflowY: 'auto',
                     }}
                 >
                     {this.state.users.map((user) => {
