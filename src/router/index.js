@@ -5,10 +5,11 @@ import {
     Route,
     Redirect
 } from 'react-router-dom';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
     withRouter
 } from 'react-router-dom';
+import Input from '../components/Input';
 import {
     updatePrice,
     updateBalance,
@@ -20,9 +21,10 @@ import {
     setStatus,
     setComission,
     setExchangeRate,
-    addNews
+    addNews,
+    filterCompanies
 } from '../actions';
-import { push } from 'connected-react-router';
+import {push} from 'connected-react-router';
 import {
     Home,
     Login,
@@ -30,15 +32,15 @@ import {
     AdminDashboard,
     AdminManageGame
 } from './asyncRoutes';
-import { isLoggedSelector } from '../selectors';
-import { numberWithCommas } from '../utils';
+import {isLoggedSelector} from '../selectors';
+import {numberWithCommas} from '../utils';
 import ReactNotification from 'react-notifications-component'
 import Button from '../components/Button';
 import Axios from 'axios';
 
 class RouterApp extends React.Component {
     async componentDidMount() {
-        const { data } = await Axios.post(API_URL, {
+        const {data} = await Axios.post(API_URL, {
             query: `{
             user(uuid: "${this.props.userUUID}") {
                 uuid
@@ -132,6 +134,7 @@ class RouterApp extends React.Component {
         })
 
     }
+
     render() {
         return (<Layout
             {...this.props}
@@ -165,10 +168,10 @@ class RouterApp extends React.Component {
                     to={{
                         pathname: '/',
                     }}
-                />} />
+                />}/>
 
             </Switch>
-        </Layout >)
+        </Layout>)
     }
 }
 
@@ -190,9 +193,9 @@ export const Layout = withRouter((props) => {
     }
     if (props.isLogged) {
         return <>
-            <ReactNotification />
+            <ReactNotification/>
             <nav id="navbar" className="navbar is-primary" role="navigation" aria-label="main navigation">
-                <div className="navbar-brand">
+                <div className="navbar-brand" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <a className="navbar-item" href="#">
                         <h1
                             className="has-text-weight-bold"
@@ -200,6 +203,22 @@ export const Layout = withRouter((props) => {
                             StockMKT
                         </h1>
                     </a>
+                    {
+                        (!props.admin) ?
+                            <div className="control has-icons-left has-icons-right">
+                                <input
+                                    className="input"
+                                    type="text"
+                                    placeholder="Buscar compañía"
+                                    onChange={(e) => props.filterCompanies(e.target.value)}
+                                    value={props.filter}
+                                />
+                                <span className="icon is-small is-left"><i className="fas fa-search-dollar"/></span>
+                                <a className="icon is-small is-right" style={{ pointerEvents: 'auto' }} onClick={() => props.filterCompanies('')}><i className="fas fa-eraser"/></a>
+                            </div>
+                            :
+                            null
+                    }
                     {props.admin && <div className="navbar-start">
                         <a
                             className={`navbar-item${props.location.pathname === '/' ? ' is-active' : ''}`}
@@ -239,7 +258,7 @@ export const Layout = withRouter((props) => {
                                         borderColor: '#fff'
                                     }}
                                     className="is-primary is-outlined"
-                                    text={<span>Balance: <b>{numberWithCommas(props.balance || 0)}</b> USD</span>}
+                                    text={<span>Efectivo: <b>{numberWithCommas(props.balance || 0)}</b> USD</span>}
                                 /> : null}
                             <Button
                                 // disabled
@@ -260,12 +279,12 @@ export const Layout = withRouter((props) => {
         </>
     }
     return (<>
-        <ReactNotification />
+        <ReactNotification/>
         {props.children}
     </>)
 })
 
-const NotLoggedOnlyRoutes = ({ component: Component, ...rest }) => {
+const NotLoggedOnlyRoutes = ({component: Component, ...rest}) => {
     return (
         <Route
             {...rest}
@@ -273,30 +292,30 @@ const NotLoggedOnlyRoutes = ({ component: Component, ...rest }) => {
                 return (!rest.isLogged) ? (
                     <Component {...props} />
                 ) : (
-                        <Redirect
-                            to={{
-                                pathname: '/',
-                                state: {
-                                    from: props.location
-                                }
-                            }}
-                        />
-                    )
+                    <Redirect
+                        to={{
+                            pathname: '/',
+                            state: {
+                                from: props.location
+                            }
+                        }}
+                    />
+                )
             }
             }
         />
     )
 }
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
+const ProtectedRoute = ({component: Component, ...rest}) => {
     /**
      * It's posible to handle Roles.
      * var regex = new RegExp(rest.roles, 'g');
      * let hasScope = rest.requiredScope.match(regex) !== null;
      */
 
-    // var regex = new RegExp(rest.roles, 'g');
-    // let hasScope = rest.requiredScope.match(regex) !== null;
+        // var regex = new RegExp(rest.roles, 'g');
+        // let hasScope = rest.requiredScope.match(regex) !== null;
     let hasPerm = rest.isLogged;
     // if (hasPerm && ('isAdmin' in rest)) {
     //     hasPerm = rest.isAdmin;
@@ -307,13 +326,13 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
             render={props => {
                 return hasPerm ?
                     (<Component
-                        {...props}
-                    />
+                            {...props}
+                        />
                     ) : (
                         <Redirect
                             to={{
                                 pathname: '/login',
-                                state: { from: props.location }
+                                state: {from: props.location}
                             }}
                         />
                     )
@@ -321,7 +340,6 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
         />
     )
 }
-
 
 
 const mapStateToProps = (state) => {
@@ -332,6 +350,7 @@ const mapStateToProps = (state) => {
         userUUID: state.app.userUUID,
         admin: state.app.admin,
         status: state.app.status,
+        filter: state.app.filter
     }
 }
 
@@ -347,5 +366,6 @@ export default (connect(mapStateToProps, {
     setComission,
     setExchangeRate,
     setStocks,
-    addNews
+    addNews,
+    filterCompanies
 })(RouterApp))

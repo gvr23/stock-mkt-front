@@ -1,4 +1,4 @@
-import { SET_IS_LOADING, LOGGED_IN, UPDATE_BALANCE, LOG_OUT, SET_STATUS, SET_COMISSION, SET_EXCHANGE_RATE, ADD_NEWS } from '../constants';
+import { SET_IS_LOADING, LOGGED_IN, UPDATE_BALANCE, LOG_OUT, SET_STATUS, SET_COMISSION, SET_EXCHANGE_RATE, ADD_NEWS, FILTER_COMPANIES } from '../constants';
 
 const INITIAL_STATE = {
     isLoading: true,
@@ -6,7 +6,7 @@ const INITIAL_STATE = {
     username: null,
     balance: null,
     admin: false,
-
+    filter: 'hey',
     status: null,
     comission: null,
     exchangeRate: null,
@@ -57,6 +57,11 @@ export default (state = INITIAL_STATE, { type, payload }) => {
             return {
                 ...state,
                 isLoading: payload
+            }
+        case FILTER_COMPANIES:
+            return {
+                ...state,
+                filter: payload
             }
         case LOG_OUT:
             return {

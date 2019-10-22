@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
-import { setStocks, logInUser, setHoldings, upsertHolding, setTransactions } from '../../actions'
+import {setStocks, logInUser, setHoldings, upsertHolding, setTransactions} from '../../actions'
 import Button from '../../components/Button';
 import Icon from '../../components/Icon';
 import Card from '../../components/Card';
 import Input from '../../components/Input';
-import { numberWithCommas } from '../../utils';
-import { stocksSelector } from '../../selectors/stocks';
-import { store } from 'react-notifications-component'
+import {numberWithCommas} from '../../utils';
+import {stocksSelector} from '../../selectors/stocks';
+import {store} from 'react-notifications-component'
 
 
 class Transactions extends Component {
@@ -18,7 +18,7 @@ class Transactions extends Component {
     }
 
     render() {
-        const { showTransactions } = this.props;
+        const {showTransactions} = this.props;
         return <>
             <div
                 onClick={this.props.onClose}
@@ -30,8 +30,8 @@ class Transactions extends Component {
                 }}
                 className={`_transactions_bottom${this.props.showTransactions ? ' show' : ''}`}
             >
-                <nav id="middle-navbar" style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-                    className="navbar is-primary" role="navigation" aria-label="main navigation">
+                <nav id="middle-navbar" style={{position: 'absolute', top: 0, left: 0, width: '100%'}}
+                     className="navbar is-primary" role="navigation" aria-label="main navigation">
                     <div className="navbar-brand">
                         <a className="navbar-item" href="#">
                             <h1
@@ -86,7 +86,7 @@ class Transactions extends Component {
                                 <p>Precio al momento
                                     de {isBuy ? 'compra' : 'venta'}: <b>{transactionPrice.toFixed(2)} {transaction.stock.currency}</b>
                                 </p>
-                                <hr />
+                                <hr/>
                                 <p>Monto {isBuy ? 'pagado' : 'recibido'}: <b>{numberWithCommas((transaction.quantity * transactionPrice).toFixed(2))} {transaction.stock.currency}</b>
                                 </p>
 
@@ -104,7 +104,7 @@ class Transactions extends Component {
                                     <Button
                                         className={`is-primary is-outlined${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? ' is-win' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? ' is-lose' : ' is-draw'}`}
                                         text={<span><Icon
-                                            style={{ marginRight: 15 }}
+                                            style={{marginRight: 15}}
                                             name={`${((!isBuy && transactionPrice > price) || (isBuy && price > transactionPrice)) ? 'arrow-circle-up' : ((isBuy && price < transactionPrice) || (!isBuy && transactionPrice < price)) ? 'arrow-circle-down' : 'equals'}`}
                                         />{`      VA: ${price.toFixed(2)}`}</span>}
                                     />
@@ -118,26 +118,26 @@ class Transactions extends Component {
     }
 }
 
-const Modal = ({ children, closeModal, modalState, title }) => {
+const Modal = ({children, closeModal, modalState, title}) => {
     if (!modalState) {
         return null;
     }
 
     return (
         <div className="modal is-active">
-            <div className="modal-background" onClick={closeModal} />
+            <div className="modal-background" onClick={closeModal}/>
             <div className="modal-card">
-                <header className="modal-card-head" style={{ backgroundColor: '#371E9E' }}>
-                    <p className="modal-card-title" style={{ color: 'white' }}>{title}</p>
-                    <button className="delete" onClick={closeModal} />
+                <header className="modal-card-head" style={{backgroundColor: '#371E9E'}}>
+                    <p className="modal-card-title" style={{color: 'white'}}>{title}</p>
+                    <button className="delete" onClick={closeModal}/>
                 </header>
                 <section className="modal-card-body">
                     <div className="content">
                         {children}
                     </div>
                 </section>
-                <footer className="modal-card-foot" style={{ backgroundColor: '#371E9E' }}>
-                    <div className="control" style={{ marginRight: '2%' }}>
+                <footer className="modal-card-foot" style={{backgroundColor: '#371E9E'}}>
+                    <div className="control" style={{marginRight: '2%'}}>
                         <button onClick={closeModal} className="button is-danger">Cerrar</button>
                     </div>
                 </footer>
@@ -161,7 +161,7 @@ class LeftSideBar extends Component {
     }
 
     changeState(newState) {
-        this.setState({ ...newState })
+        this.setState({...newState})
     }
 
     reset(onlyBtn = false) {
@@ -181,7 +181,7 @@ class LeftSideBar extends Component {
     }
 
     getTotal() {
-        const { stockList, stockToSell } = this.props
+        const {stockList, stockToSell} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
@@ -189,7 +189,7 @@ class LeftSideBar extends Component {
     }
 
     render() {
-        const { show, stockToSell, stockList, balance } = this.props
+        const {show, stockToSell, stockList, balance} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToSell] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue - comission
@@ -220,7 +220,7 @@ class LeftSideBar extends Component {
                 >
                     <Icon
                         onClick={() => {
-                            this.setState({ error: undefined }, () => {
+                            this.setState({error: undefined}, () => {
                                 this.props.onClose()
                             })
                         }}
@@ -268,7 +268,7 @@ class LeftSideBar extends Component {
 
 
                     {stockToSell !== undefined && <form>
-                        <br />
+                        <br/>
 
 
                         <p
@@ -277,7 +277,7 @@ class LeftSideBar extends Component {
 
                             Actualizada por última vez el {stockList[stockToSell]["timestamp"]}
                         </p>
-                        <br />
+                        <br/>
                         <div
                             className="_holdings"
                         >
@@ -286,7 +286,7 @@ class LeftSideBar extends Component {
                             vender
                         </div>
 
-                        <br />
+                        <br/>
                         <Input
                             onChange={(e) => this.setState({
                                 error: undefined,
@@ -344,7 +344,7 @@ class LeftSideBar extends Component {
                             noPadding
 
                         />
-                        <hr />
+                        <hr/>
                         <small>Nuevo balance al finalizar venta</small>
                         <Input
                             className={this.state.quantity > this.props.holdings[stockToSell] ? 'error' : 'success'}
@@ -406,7 +406,7 @@ class SideBar extends Component {
     }
 
     getTotal() {
-        const { stockList, stockToBuy } = this.props
+        const {stockList, stockToBuy} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
@@ -414,7 +414,7 @@ class SideBar extends Component {
     }
 
     render() {
-        const { show, stockToBuy, stockList, balance } = this.props
+        const {show, stockToBuy, stockList, balance} = this.props
         const actionValue = (parseInt(this.state.quantity || 0) * parseFloat((stockList[stockToBuy] || {})["price"]))
         const comission = actionValue * this.props.comission
         const totalAmount = actionValue + comission
@@ -480,21 +480,21 @@ class SideBar extends Component {
                         </div>
                     </div>}
                     {stockToBuy !== undefined && <form>
-                        <br />
+                        <br/>
                         <p
                             className="has-text-centered is-fullwidth"
                         >
                             Actualizada por última vez el {stockList[stockToBuy]["timestamp"]}
                         </p>
                         {stockList[stockToBuy]["currency"] === 'PEN' ? <>
-                            <br />
+                            <br/>
                             <small>Tipo de cambio</small>
                             <Input
                                 editable={"false"}
                                 disabled
                                 value={`${this.props.exchangeRate} PEN`}
                             />
-                        </> : <br />}
+                        </> : <br/>}
                         <Input
                             onChange={(e) => this.setState({
                                 quantity: e.target.value.replace(/[^0-9]+/g, '')
@@ -531,7 +531,7 @@ class SideBar extends Component {
                             noPadding
 
                         />
-                        <hr />
+                        <hr/>
                         <small>Nuevo balance al finalizar compra</small>
                         <Input
                             className={((stockList[stockToBuy]["currency"] === 'USD' && newBalance < 0) || (stockList[stockToBuy]["currency"] === 'PEN') && newBalancePen < 0) ? 'error' : 'success'}
@@ -579,7 +579,8 @@ class Home extends Component {
             sellAll: false,
             showTransactions: false,
             modalState: false,
-            news: []
+            news: [],
+            filtered_companies: null
         }
         this.toggleModal = this.toggleModal.bind(this);
         this.onSubmitBuy = this.onSubmitBuy.bind(this)
@@ -587,7 +588,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-        const { data } = await Axios.post(API_URL, {
+        const {data} = await Axios.post(API_URL, {
             query: `{
                 transactions(user_uuid: "${this.props.userUUID}") {
                     uuid
@@ -645,14 +646,29 @@ class Home extends Component {
         }
 
         this.setState({
-            loading: false,
+            loading: false
         })
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        console.log('these are the props, ', props)
+        console.log('these is the state, ', state)
+        if (props.filter === '') {
+            return {filtered_companies: props.stockList}
+        } else {
+            const filtered_companies = Object.values(props.stockList).filter((company) => {
+                const re = new RegExp(props.filter, 'gi');
+                return re.test(company.companyname + ' ' + company.name);
+            });
+
+            return { filtered_companies }
+        }
     }
 
     toggleModal() {
         this.setState((prev, props) => {
             const newState = !prev.modalState;
-            return { modalState: newState };
+            return {modalState: newState};
         });
     }
 
@@ -679,14 +695,14 @@ class Home extends Component {
                     errorBuy: 'Minima compra: 1500.00 USD o 5025.00 PEN'
                 })
             }
-            const { balance } = this.props
+            const {balance} = this.props
             if ((currency === 'USD' && balance < total) || (currency === 'PEN' && balance < (total / this.props.exchangeRate))) {
                 this.sideBar.reset(true)
                 return this.setState({
                     errorBuy: 'No tienes fondos suficientes para esta compra'
                 })
             }
-            const { data } = await Axios.post(API_URL, {
+            const {data} = await Axios.post(API_URL, {
                 query: `mutation{
                     buyOrSell(
                       user_uuid: "${this.props.userUUID}"
@@ -747,7 +763,7 @@ class Home extends Component {
         return Object.keys(stockList).map((stockKey) => {
             // const stock = stockList[stockKey]
             return <Card
-                onBuy={() => this.setState({ showBuy: true, stockToBuy: stockKey })}
+                onBuy={() => this.setState({showBuy: true, stockToBuy: stockKey})}
                 key={stockKey}
                 item={stockList[stockKey]}
                 stockUUID={stockKey}
@@ -758,7 +774,7 @@ class Home extends Component {
     }
 
     onSubmitSell(e) {
-        this.leftSideBar.setState({ error: undefined }, async () => {
+        this.leftSideBar.setState({error: undefined}, async () => {
             const quantity = this.leftSideBar.getQuantity()
             if (isNaN(quantity) || quantity == 0) {
                 this.leftSideBar.reset(true)
@@ -790,7 +806,7 @@ class Home extends Component {
                 })
             }
 
-            const { data } = await Axios.post(API_URL, {
+            const {data} = await Axios.post(API_URL, {
                 query: `mutation{
                     buyOrSell(
                       user_uuid: "${this.props.userUUID}"
@@ -854,14 +870,16 @@ class Home extends Component {
             this.props.news[key].filter((item, i) => {
                 if (item.stockUUID === stockUUID) {
                     if (section) {
-                        news.push(<article className="tile is-rounded" style={{ marginBottom: '3%', backgroundColor: '#6543C8', padding: '2%' }}>
-                            <p className="subtitle" style={{ color: 'white' }}>{(String(key).toUpperCase() === 'OLD') ? 'NOTICIAS ANTIGUAS' : String(key).toUpperCase().replace(/_/gi, ' ')}</p>
+                        news.push(<article className="tile is-rounded"
+                                           style={{marginBottom: '3%', backgroundColor: '#6543C8', padding: '2%'}}>
+                            <p className="subtitle"
+                               style={{color: 'white'}}>{(String(key).toUpperCase() === 'OLD') ? 'NOTICIAS ANTIGUAS' : String(key).toUpperCase().replace(/_/gi, ' ')}</p>
                         </article>);
 
 
                         section = false;
                     }
-                    news.push(<article className="message is-link" style={{ marginBottom: '1.5%' }}>
+                    news.push(<article className="message is-link" style={{marginBottom: '1.5%'}}>
                         <div className="message-body">
                             {item.new}
                         </div>
@@ -875,18 +893,22 @@ class Home extends Component {
             console.log('this is the item, ', item.stockUUID)
             if (item.stockUUID === stockUUID) news.push(item);
         })*/
-        this.setState({ news });
+        this.setState({news});
     }
 
     renderNews() {
         const toRender = []
         Object.keys(this.props.news).map((newKey) => {
-            toRender.push(<div key={newKey} className="message-header notification is-link" style={{ marginTop: '1%', marginBottom: '1%', backgroundColor: '#1A2E8F' }}>{(String(newKey).toUpperCase() === 'OLD') ? (this.props.news['old'].length === 0 ? 'NO HAY NOTICIAS' : 'NOTICIAS ANTIGUAS') : String(newKey).toUpperCase().replace(/_/gi, ' ')}</div>)
+            toRender.push(<div key={newKey} className="message-header notification is-link" style={{
+                marginTop: '1%',
+                marginBottom: '1%',
+                backgroundColor: '#1A2E8F'
+            }}>{(String(newKey).toUpperCase() === 'OLD') ? (this.props.news['old'].length === 0 ? 'NO HAY NOTICIAS' : 'NOTICIAS ANTIGUAS') : String(newKey).toUpperCase().replace(/_/gi, ' ')}</div>)
             this.props.news[newKey].forEach((newObj, i) => {
                 toRender.push(<div
                     key={`${newKey}-${i}`}
                     className="message-body notification is-link"
-                    style={{ backgroundColor: '#371E9E' }}
+                    style={{backgroundColor: '#371E9E'}}
                 >
                     <p>{newObj.new}</p>
                 </div>)
@@ -897,11 +919,23 @@ class Home extends Component {
 
     }
 
+    onFilter = (searchValue) => {
+        this.setState({
+            filtered_companies: props.stockList.filter((company) => {
+                const re = new RegExp(searchValue, 'gi');
+                return re.test(company.companyname + ' ' + company.name);
+            })
+        })
+    }
+
+
     render() {
+        const {filtered_companies} = this.state;
+        console.log('the forwarded, ', filtered_companies);
+        console.log('and the original, ', this.props.stockList);
         if (this.state.loading || !this.props.connected) {
             return <div className="pageloader is-active is-primary"><span className="title">Conectando...</span></div>
         }
-        const { stockList } = this.props
         return <div
             style={{
                 display: 'flex',
@@ -923,7 +957,7 @@ class Home extends Component {
 
                 }}
             >
-                {this.renderStocks(stockList)}
+                {this.renderStocks(filtered_companies)}
             </div>
             <div
                 style={{
@@ -936,8 +970,8 @@ class Home extends Component {
                     paddingTop: 40
                 }}
             >
-                <nav id="middle-navbar" style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
-                    className="navbar is-primary" role="navigation" aria-label="main navigation">
+                <nav id="middle-navbar" style={{position: 'absolute', top: 0, left: 0, width: '100%'}}
+                     className="navbar is-primary" role="navigation" aria-label="main navigation">
                     <div className="navbar-brand">
                         <a className="navbar-item" href="#">
                             <h1
@@ -976,7 +1010,7 @@ class Home extends Component {
                                     className="is-primary is-outlined"
                                     text={
                                         <span>USD <b>{numberWithCommas(Object.keys(this.props.holdings).reduce((prev, curr) => {
-                                            prev += stockList[curr]["price"] * this.props.holdings[curr]
+                                            prev += filtered_companies[curr]["price"] * this.props.holdings[curr]
                                             return prev
                                         }, 0).toFixed(2))}</b> en valor de acciones</span>}
                                 />
@@ -1004,7 +1038,7 @@ class Home extends Component {
                         >No haz realizado ninguna compra aún.</h1>
                     </div> : Object.keys(this.props.holdings).map((stockUUID) => {
                         const quantity = this.props.holdings[stockUUID]
-                        const stockObj = stockList[stockUUID]
+                        const stockObj = filtered_companies[stockUUID]
                         const stockPrice = stockObj["price"]
                         const changePercent = stockObj["changePercent"]
                         const currency = stockObj["currency"]
@@ -1030,7 +1064,7 @@ class Home extends Component {
                                         }}
                                     > {stockObj["companyname"]}</strong>
                                     <small className="has-text-centered">Tienes <b
-                                        style={{ fontWeight: 700 }}>{quantity}</b> acciones de esta empresa.</small>
+                                        style={{fontWeight: 700}}>{quantity}</b> acciones de esta empresa.</small>
                                 </div>
                                 <div className="right">
                                     {/* <p> {stockPrice.toFixed(2)} {stockObj["currency"]}</p> */}
@@ -1060,19 +1094,19 @@ class Home extends Component {
                                         quantity: ''
                                     }))}
                                     className={`is-primary is-outlined is-medium is-fullwidth`}
-                                    dangerouslySetInnerHTML={{ __html: `Vender por <b style="margin:0px 5px">${parseFloat(stockPrice).toFixed(2)}</b> ${currency} C/U` }}
+                                    dangerouslySetInnerHTML={{__html: `Vender por <b style="margin:0px 5px">${parseFloat(stockPrice).toFixed(2)}</b> ${currency} C/U`}}
                                 />
                                 <Button
                                     onClick={() => this.setState({
                                         showSell: true,
                                         stockToSell: stockUUID,
                                         sellAll: true,
-                                    }, _ => this.leftSideBar.setState({ quantity: `${quantity}` }))}
+                                    }, _ => this.leftSideBar.setState({quantity: `${quantity}`}))}
                                     style={{
                                         marginTop: 10
                                     }}
                                     className={`${changePercent > 0 ? 'is-success' : 'is-danger'} is-medium is-fullwidth`}
-                                    dangerouslySetInnerHTML={{ __html: `Todo por <b style="margin:0px 5px">${numberWithCommas((stockPrice * quantity).toFixed(2), true) + ' '}</b> ${currency}` }}
+                                    dangerouslySetInnerHTML={{__html: `Todo por <b style="margin:0px 5px">${numberWithCommas((stockPrice * quantity).toFixed(2), true) + ' '}</b> ${currency}`}}
                                 />
                             </div>
                         </div>
@@ -1136,7 +1170,7 @@ class Home extends Component {
                 })}
                 show={this.state.showSell}
                 stockToSell={this.state.stockToSell}
-                stockList={this.props.stockList}
+                stockList={filtered_companies}
                 onSubmitSell={this.onSubmitSell}
                 comission={this.props.comission}
                 exchangeRate={this.props.exchangeRate}
@@ -1152,16 +1186,16 @@ class Home extends Component {
                 })}
                 show={this.state.showBuy}
                 stockToBuy={this.state.stockToBuy}
-                stockList={this.props.stockList}
+                stockList={filtered_companies}
                 onSubmitBuy={this.onSubmitBuy}
                 comission={this.props.comission}
                 exchangeRate={this.props.exchangeRate}
             />
             <Transactions
-                stockList={this.props.stockList}
+                stockList={filtered_companies}
                 transactions={this.props.transactions}
                 showTransactions={this.state.showTransactions}
-                onClose={() => this.setState({ showTransactions: false })}
+                onClose={() => this.setState({showTransactions: false})}
                 comission={this.props.comission}
                 exchangeRate={this.props.exchangeRate}
             />
@@ -1183,7 +1217,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
-    const { holdings } = state.stocks
+    const {holdings} = state.stocks
     return {
         stockList: stocksSelector(state),
         userUUID: state.app.userUUID,
@@ -1194,6 +1228,7 @@ const mapStateToProps = state => {
         connected: state.stocks.connected,
         transactions: state.stocks.transactions,
         news: state.app.news,
+        filter: state.app.filter
     }
 }
 
@@ -1202,6 +1237,6 @@ export default connect(mapStateToProps, {
     upsertHolding,
     setTransactions,
     logInUser,
-    setHoldings,
+    setHoldings
 })(Home);
 

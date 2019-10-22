@@ -8,6 +8,7 @@ import {
     SET_EXCHANGE_RATE,
     SET_STATUS,
     ADD_NEWS,
+    FILTER_COMPANIES,
 } from '../constants';
 
 export const setIsLoading = (payload) => ({
@@ -50,3 +51,7 @@ export const addNews = payload => ({
     type: ADD_NEWS,
     payload
 })
+export const filterCompanies = payload => ({
+    type: FILTER_COMPANIES,
+    payload
+});
