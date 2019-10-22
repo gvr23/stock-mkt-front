@@ -12,8 +12,15 @@ class AdminManageGame extends React.Component {
         this.state = {
             comission: this.props.comission,
             exchangeRate: this.props.exchangeRate,
-            users: []
+            users: [],
+            errorGroupName: undefined,
+            errorGroupPassword: undefined,
+            newGroupName: '',
+            newGroupPassword: ''
         }
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.onRegister = this.onRegister.bind(this);
     }
 
     async componentDidMount() {
@@ -29,8 +36,64 @@ class AdminManageGame extends React.Component {
         console.log({data})
         this.setState({users: data.data.users})
     }
+    toggleModal() {
+        this.setState((prev, props) => {
+            const newState = !prev.modalState;
+
+            return {modalState: newState};
+        });
+    }
+    onRegister = async () => {
+        const {newGroupName, newGroupPassword} = this.state;
+        const that = this;
+        this.setState({errorGroupName: undefined, errorGroupPassword: undefined});
+
+        if (newGroupName.length <= 0) {
+            return this.setState({
+                errorGroupName: 'Debes registrar un nombre',
+            })
+        }
+        if (newGroupPassword.length <= 0) {
+            return this.setState({
+                errorGroupPassword: 'Debes registrar una contraseña'
+            })
+        }
+        await Axios.post(API_URL, {
+            query: `mutation{
+                        createUser(username: "${newGroupName}" password: "${newGroupPassword}") {
+                            username
+                            uuid
+                        }
+                    }`
+        })
+            .then(rep => {
+                if(rep.status === 200){
+                    if (rep.data.errors) {
+                        const key = 'errorGroupName';
+                        const err = 'El nombre ingresado ya existe';
+                        return this.setState({
+                            [key]: err
+                        })
+                    } else {
+                        setTimeout(() => {
+                            window.location.reload();
+                            this.toggleModal();
+                        }, 250);
+                        that.setState({ newGroupName: '', newGroupPassword: '' });
+                    }
+                }
+            })
+            .catch(er => console.log('this is the err, ', er));
+    }
+    onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
     render() {
+        const {
+            errorGroupName,
+            errorGroupPassword,
+            newGroupName,
+            newGroupPassword
+        } = this.state;
         return <div
             className="_admin_manage"
             style={{
@@ -233,14 +296,14 @@ class AdminManageGame extends React.Component {
                         flexWrap: 'wrap',
                         justifyContent: 'space-around',
                         overFlowX: 'auto',
-                        overflowY: 'auto',
+                        overflowY: 'hidden',
                         height: '80%'
                     }}
                 >
                     {this.state.users.map((user) => {
                         return <div id="row" style={{marginBottom: '2%'}}>
                             <Input
-                                value={user.username}
+                                value={String(user.username)}
                                 editable="false"
                                 onChange={e => this.setState({})}
                                 extra={<Button
@@ -258,14 +321,75 @@ class AdminManageGame extends React.Component {
                       className="is-success"
                       style={{ width: '100%' }}
                       text="Agregar participante"
-                      onClick={() => {
-
-                      }}
+                      onClick={this.toggleModal}
                   />
                 </div>
             </section>
+
+            <Modal
+                closeModal={this.toggleModal}
+                modalState={this.state.modalState}
+                onPress={this.onRegister}
+                title="Activar cuenta"
+            >
+                <div className="field">
+                    <label className="label" style={{color: '#5D4E75'}}>Nombre</label>
+                    <Input
+                        style={{borderWidth: 1, borderColor: '#371E9E'}}
+                        error={errorGroupName}
+                        autoComplete="group name"
+                        placeholder="Nombre de grupo"
+                        value={String(newGroupName)}
+                        name="newGroupName"
+                        onChange={this.onChange}
+                    />
+                </div>
+                <div className="field">
+                    <label className="label" style={{color: '#5D4E75'}}>Contraseña</label>
+                    <Input
+                        style={{borderWidth: 1, borderColor: '#371E9E'}}
+                        error={errorGroupPassword}
+                        autoComplete="password"
+                        placeholder="Contraseña"
+                        value={String(newGroupPassword)}
+                        name="newGroupPassword"
+                        onChange={this.onChange}
+                    />
+                </div>
+            </Modal>
         </div>
     }
+}
+
+const Modal = ({children, closeModal, modalState, title, onPress}) => {
+    if (!modalState) {
+        return null;
+    }
+
+    return (
+        <div className="modal is-active">
+            <div className="modal-background" onClick={closeModal}/>
+            <div className="modal-card">
+                <header className="modal-card-head" style={{backgroundColor: '#371E9E'}}>
+                    <p className="modal-card-title" style={{color: 'white'}}>{title}</p>
+                    <button className="delete" onClick={closeModal}/>
+                </header>
+                <section className="modal-card-body">
+                    <div className="content">
+                        {children}
+                    </div>
+                </section>
+                <footer className="modal-card-foot" style={{backgroundColor: '#371E9E'}}>
+                    <div className="control" style={{marginRight: '2%'}}>
+                        <button onClick={closeModal} className="button is-danger">Cancelar</button>
+                    </div>
+                    <div className="control">
+                        <button onClick={onPress} className="button is-link">Enviar</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    );
 }
 
 const mapStateToProps = state => {

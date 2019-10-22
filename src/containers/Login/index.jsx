@@ -17,24 +17,24 @@ class Login extends React.Component {
             user: '',
             pass: '',
             modalState: false,
-            errorGroupName: undefined,
+           /* errorGroupName: undefined,
             errorGroupPassword: undefined,
             newGroupName: '',
-            newGroupPassword: ''
+            newGroupPassword: ''*/
         }
-        this.toggleModal = this.toggleModal.bind(this);
+        /*this.toggleModal = this.toggleModal.bind(this);*/
         this.onClick = this.onClick.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.onRegister = this.onRegister.bind(this);
+        /*this.onRegister = this.onRegister.bind(this);*/
     }
 
-    toggleModal() {
+    /*toggleModal() {
         this.setState((prev, props) => {
             const newState = !prev.modalState;
 
             return {modalState: newState};
         });
-    }
+    }*/
 
     async onClick(e) {
         this.setState({errorPass: undefined, errorUser: undefined})
@@ -85,7 +85,7 @@ class Login extends React.Component {
         })
     }
 
-    onRegister = async () => {
+   /* onRegister = async () => {
         const {newGroupName, newGroupPassword} = this.state;
         const that = this;
         this.setState({errorGroupName: undefined, errorGroupPassword: undefined});
@@ -123,18 +123,18 @@ class Login extends React.Component {
                 }
             })
             .catch(er => console.log('this is the err, ', er));
-    }
+    }*/
 
     render() {
         const {
             errorUser,
             errorPass,
             user,
-            pass,
-            errorGroupName,
+            pass
+/*            errorGroupName,
             errorGroupPassword,
             newGroupName,
-            newGroupPassword
+            newGroupPassword*/
         } = this.state;
         return (
             <div
@@ -178,13 +178,13 @@ class Login extends React.Component {
                             isFluid
                         />
                     </div>
-                    <a
+                  {/*  <a
                         onClick={this.toggleModal}
                         style={{display: 'flex', alignSelf: 'flex-end' }}
-                    >Registrarse</a>
+                    >Registrarse</a>*/}
                 </form>
 
-                <Modal
+                {/*<Modal
                     closeModal={this.toggleModal}
                     modalState={this.state.modalState}
                     onPress={this.onRegister}
@@ -214,13 +214,13 @@ class Login extends React.Component {
                             onChange={this.onChange}
                         />
                     </div>
-                </Modal>
+                </Modal>*/}
             </div>
         )
     }
 }
 
-const Modal = ({children, closeModal, modalState, title, onPress}) => {
+/*const Modal = ({children, closeModal, modalState, title, onPress}) => {
     if (!modalState) {
         return null;
     }
@@ -249,7 +249,7 @@ const Modal = ({children, closeModal, modalState, title, onPress}) => {
             </div>
         </div>
     );
-}
+}*/
 
 
 export default connect(() => ({}), {
