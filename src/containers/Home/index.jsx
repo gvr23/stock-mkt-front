@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import AdaptableImg from '../../components/AdaptableImg'
-import { setStocks, logInUser, setHoldings, upsertHolding, setTransactions } from '../../actions'
+import { setStocks, logInUser, setHoldings, upsertHolding, setTransactions, addTransacction } from '../../actions'
 import Button from '../../components/Button';
 import Icon from '../../components/Icon';
 import Card from '../../components/Card';
@@ -671,6 +671,7 @@ class Home extends Component {
             }
 
 
+            console.log('JUSTO ANTES DE COMPRAR Y LUEGO DE ACTUALIZAR', this.state.stockToBuy, this.props.stockList[this.state.stockToBuy])
             const total = this.sideBar.getTotal()
             const currency = this.props.stockList[this.state.stockToBuy].currency
             if ((currency === 'USD' && total < 1500) || (currency === 'PEN' && total < 5025)) {
@@ -723,7 +724,23 @@ class Home extends Component {
                 this.setState({
                     showBuy: false,
                 }, () => {
+                    if (!data.data.buyOrSell) {
+                        return store.addNotification({
+                            title: "Error",
+                            message: `Ubo un error en la compra`,
+                            type: "danger",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "fadeIn"],
+                            animationOut: ["animated", "fadeOut"],
+                            dismiss: {
+                                duration: 5000,
+                                onScreen: true
+                            }
+                        });
+                    }
                     this.sideBar.reset()
+                    this.props.addTransacction(data.data.buyOrSell)
                     store.addNotification({
                         title: "Transacción exitosa",
                         message: `Se compraron ${quantity} acciones de ${this.props.stockList[this.state.stockToBuy].companyname}`,
@@ -827,7 +844,23 @@ class Home extends Component {
                 this.setState({
                     showSell: false,
                 }, () => {
+                    if (!data.data.buyOrSell) {
+                        return store.addNotification({
+                            title: "Error",
+                            message: `Ubo un error en la compra`,
+                            type: "danger",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "fadeIn"],
+                            animationOut: ["animated", "fadeOut"],
+                            dismiss: {
+                                duration: 5000,
+                                onScreen: true
+                            }
+                        });
+                    }
                     this.leftSideBar.reset()
+                    this.props.addTransacction(data.data.buyOrSell)
                     store.addNotification({
                         title: "Transacción exitosa",
                         message: `Se vendieron ${quantity} acciones de ${this.props.stockList[this.state.stockToSell].companyname}`,
@@ -1140,6 +1173,7 @@ class Home extends Component {
                 onSubmitSell={this.onSubmitSell}
                 comission={this.props.comission}
                 exchangeRate={this.props.exchangeRate}
+                addTransacction={this.props.addTransacction}
             />
             <SideBar
                 error={this.state.errorBuy}
@@ -1155,6 +1189,7 @@ class Home extends Component {
                 stockList={this.props.stockList}
                 onSubmitBuy={this.onSubmitBuy}
                 comission={this.props.comission}
+                addTransacction={this.props.addTransacction}
                 exchangeRate={this.props.exchangeRate}
             />
             <Transactions
@@ -1203,5 +1238,6 @@ export default connect(mapStateToProps, {
     setTransactions,
     logInUser,
     setHoldings,
+    addTransacction,
 })(Home);
 

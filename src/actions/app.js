@@ -8,7 +8,13 @@ import {
     SET_EXCHANGE_RATE,
     SET_STATUS,
     ADD_NEWS,
+    ADD_TRANSACTION,
 } from '../constants';
+
+export const addTransacction = payload => ({
+    type: ADD_TRANSACTION,
+    payload
+})
 
 export const setIsLoading = (payload) => ({
     type: SET_IS_LOADING,

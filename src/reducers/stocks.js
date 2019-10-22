@@ -4,6 +4,7 @@ import {
   SET_HOLDINGS,
   UPSERT_HOLDING,
   SET_TRANSACTIONS,
+  ADD_TRANSACTION,
   CONNECTED
 } from '../constants';
 
@@ -16,6 +17,14 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, { payload, type }) => {
   switch (type) {
+    case ADD_TRANSACTION:
+      return {
+        ...state,
+        transactions: [
+          payload,
+          ...state.transactions
+        ]
+      }
     case SET_TRANSACTIONS:
       return {
         ...state,
@@ -76,15 +85,17 @@ export default (state = INITIAL_STATE, { payload, type }) => {
       const { stockList } = state
       const newStockList = Object.keys(stockList).reduce((prev, stockKey) => {
         const stockTmp = payload[stockKey] ? payload[stockKey] : stockList[stockKey]
+        console.log({ stockTmp })
         // console.log('payload[stockKey]', payload[stockKey])
         // console.log({ stockTmp })
         prev[stockKey] = {
+          ...stockTmp,
           name: stockList[stockKey].name,
           description: stockList[stockKey].description,
           companyname: stockList[stockKey].companyname,
           currency: stockList[stockKey].currency,
           price: parseFloat(stockTmp.close_price || stockTmp.price),
-          priceUUID: stockTmp.uuid,
+          priceUUID: stockTmp.priceUUID,
           timestamp: stockTmp.timestamp,
           change: parseFloat(stockTmp.change_price || stockTmp.change),
           changePercent: parseFloat(stockTmp.change_percent || stockTmp.changePercent),
