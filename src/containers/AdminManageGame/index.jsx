@@ -34,7 +34,6 @@ class AdminManageGame extends React.Component {
       }
       `
         })
-        console.log({data})
         this.setState({users: data.data.users})
     }
     toggleModal() {

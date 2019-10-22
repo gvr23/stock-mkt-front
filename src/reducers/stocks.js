@@ -81,11 +81,9 @@ export default (state = INITIAL_STATE, { payload, type }) => {
         }, {})
       }
     case UPDATE_STOCK_PRICE:
-      console.log({ payload })
       const { stockList } = state
       const newStockList = Object.keys(stockList).reduce((prev, stockKey) => {
         const stockTmp = payload[stockKey] ? payload[stockKey] : stockList[stockKey]
-        console.log({ stockTmp })
         // console.log('payload[stockKey]', payload[stockKey])
         // console.log({ stockTmp })
         prev[stockKey] = {

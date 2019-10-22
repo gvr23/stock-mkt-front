@@ -59,7 +59,6 @@ class AdminDashboard extends React.Component {
     }
 
     render() {
-        console.log('this is the stocks, ', this.props.stockList)
         return <div
             style={{
                 display: 'flex',
@@ -101,7 +100,6 @@ class AdminDashboard extends React.Component {
                 <tbody>
                 {
                     Object.values(this.props.stockList).map(item => {
-                        console.log('this is the item,  ', item)
                         return (
                             <tr valign="middle">
                                 <td className="is-size-4"><strong>{item.name}</strong></td>

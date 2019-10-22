@@ -651,8 +651,6 @@ class Home extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log('these are the props, ', props)
-        console.log('these is the state, ', state)
         if (props.filter === '') {
             return {filtered_companies: props.stockList}
         } else {
