@@ -4,6 +4,7 @@ import Input from '../../components/Input'
 import Axios from 'axios'
 import Button from '../../components/Button'
 
+import { setSelected } from '../../actions';
 import {play, pause, stop} from '../../assets/images'
 
 class AdminManageGame extends React.Component {
@@ -156,6 +157,7 @@ class AdminManageGame extends React.Component {
                 <div className="menu-footer">
                     <div
                         className="btn"
+                        style={{ backgroundColor: (this.props.selected === 1) ? '#25146b' : null }}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -164,11 +166,13 @@ class AdminManageGame extends React.Component {
                                                 }
                                       }`
                             })
+                            this.props.setSelected(1);
                         }}>
                         <img style={{width: '54%', height: '40%'}} src={pause}/>
                     </div>
                     <div
                         className="btn"
+                        style={{ backgroundColor: (this.props.selected === 2) ? '#25146b' : null }}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -177,12 +181,14 @@ class AdminManageGame extends React.Component {
                                                 }
                                         }`
                             })
+                            this.props.setSelected(2);
                         }}
                     >
                         <img style={{width: '54%', height: '40%'}} src={play}/>
                     </div>
                     <div
                         className="btn"
+                        style={{ backgroundColor: (this.props.selected === 3) ? '#25146b' : null }}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -191,6 +197,7 @@ class AdminManageGame extends React.Component {
                                                 }
                                         }`
                             })
+                            this.props.setSelected(3);
                         }}
                     >
                         <img style={{width: '54%', height: '40%'}} src={stop}/>
@@ -404,8 +411,9 @@ const mapStateToProps = state => {
     return {
         comission: state.app.comission,
         exchangeRate: state.app.exchangeRate,
-        status: state.app.status
+        status: state.app.status,
+        selected: state.app.selected
     }
 }
 
-export default connect(mapStateToProps, {})(AdminManageGame)
+export default connect(mapStateToProps, { setSelected })(AdminManageGame)

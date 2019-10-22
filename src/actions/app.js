@@ -10,6 +10,7 @@ import {
     ADD_NEWS,
     ADD_TRANSACTION,
     FILTER_COMPANIES,
+    SET_SELECTED,
 } from '../constants';
 
 export const addTransacction = payload => ({
@@ -59,5 +60,9 @@ export const addNews = payload => ({
 })
 export const filterCompanies = payload => ({
     type: FILTER_COMPANIES,
+    payload
+});
+export const setSelected = payload => ({
+    type: SET_SELECTED,
     payload
 });

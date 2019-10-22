@@ -44,6 +44,7 @@ function Button(props) {
     } = props;
     return <button
         onClick={onClick}
+        title={props.title}
         style={props.style || {}}
         className={generateClassName(props)}
         disabled={props.disabled}

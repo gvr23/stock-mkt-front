@@ -86,21 +86,22 @@ const Card = (props) => {
                     {/* </div> */}
                     {/* </div> */}
                 </div>
-                <div
-                    className="right"
-                >
+                <div className="right">
                     <Button
+                        title="gráfico"
                         text={<Icon name="chart-line fa-1x" />}
                         className="is-primary is-medium"
                         style={{ marginBottom: 5, width: 30, height: 30 }}
                     />
                     <Button
+                        title="compra"
                         text={<Icon name="fas fa-shopping-bag fa-1x" />}
                         className="is-primary is-medium"
                         onClick={props.onBuy}
                         style={{ marginBottom: 5, width: 30, height: 30 }}
                     />
                     <Button
+                        title="noticias"
                         text={<Icon name="fas fa-newspaper fa-1x" />}
                         className="is-primary is-medium"
                         onClick={() => { props.showModal(); props.getNews(props.stockUUID) }}
