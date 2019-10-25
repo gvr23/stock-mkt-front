@@ -19,11 +19,14 @@ class AdminManageGame extends React.Component {
             errorGroupPassword: undefined,
             newGroupName: '',
             newGroupPassword: '',
-            eliminated: false
+            eliminated: false,
+            deleteModal: false,
+            userToDelete: null
         }
 
         this.toggleModal = this.toggleModal.bind(this);
         this.onRegister = this.onRegister.bind(this);
+        this.onEliminate = this.onEliminate.bind(this);
     }
 
     async componentDidMount() {
@@ -48,7 +51,6 @@ class AdminManageGame extends React.Component {
 
     onRegister = async () => {
         const {newGroupName, newGroupPassword} = this.state;
-        const that = this;
         this.setState({errorGroupName: undefined, errorGroupPassword: undefined});
 
         if (newGroupName.length <= 0) {
@@ -102,15 +104,16 @@ class AdminManageGame extends React.Component {
             });
         }
     }
-    onEliminate = async (uuid) => {
+    onEliminate = async () => {
         const {data} = await Axios.post(API_URL, {
             query: `mutation{
-                      deleteUser(uuid: "${uuid}"){
+                      deleteUser(uuid: "${this.state.userToDelete.uuid}"){
                         success
                       }
                     }`
         });
         if (data.errors) {
+            this.setState({ deleteModal: false, userToDelete: null });
             return store.addNotification({
                 title: "Error",
                 message: `El grupo no se eliminó correctamente`,
@@ -125,7 +128,7 @@ class AdminManageGame extends React.Component {
                 }
             });
         } else {
-            this.setState({ eliminated: true });
+            this.setState({ eliminated: true, deleteModal: false, userToDelete: null });
             const {data} = await Axios.post(API_URL, {
                 query: `{
                         users {
@@ -151,11 +154,26 @@ class AdminManageGame extends React.Component {
             });
         }
     };
-    onAskEliminate = (user) => {
-        let prompt = confirm(`Deseas eliminar a ${String(user.username)}`);
+    onAskEliminate = () => {
+        /*let prompt = confirm(`Deseas eliminar a ${String(user.username)}`);
         if (prompt) {
             this.onEliminate(user.uuid);
+        }*/
+        if(this.state.userToDelete){
+            return (
+                <div className="columns" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="column is-8">
+                        <div className="message is-warning">
+                            <div className="message-header" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <p>{`¿Deseas eliminar a ${String(this.state.userToDelete.username)}?`}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
         }
+        return '';
+
     };
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value});
@@ -390,7 +408,9 @@ class AdminManageGame extends React.Component {
                                     disabled={this.state.eliminated}
                                     text="Eliminar"
                                     className="is-danger  is-input-addon"
-                                    onClick={() => this.onAskEliminate(user)}
+                                    onClick={() => {
+                                        this.setState({ userToDelete: user, deleteModal: true });
+                                    }}
                                 />}
                             />
                         </div>
@@ -437,6 +457,15 @@ class AdminManageGame extends React.Component {
                         onChange={this.onChange}
                     />
                 </div>
+            </Modal>
+
+            <Modal
+                closeModal={() => this.setState({ deleteModal: false, userToDelete: null })}
+                modalState={this.state.deleteModal}
+                onPress={this.onEliminate}
+                title="Eliminar Usuario"
+            >
+                {this.onAskEliminate()}
             </Modal>
         </div>
     }
