@@ -968,8 +968,9 @@ class Home extends Component {
 
     renderNews() {
         const toRender = []
-        Object.keys(this.props.news).map((newKey) => {
-            toRender.push(<div key={newKey} className="message-header notification is-link" style={{
+        Object.keys(this.props.news).map((newKey, index) => {
+            console.log('hey this is the index, ', index)
+            toRender.push(<div key={newKey} className={`message-header notification is-link ${(index === 0) ? 'newNews' : null}`} style={{
                 marginTop: '1%',
                 marginBottom: '1%',
                 backgroundColor: '#1A2E8F'
