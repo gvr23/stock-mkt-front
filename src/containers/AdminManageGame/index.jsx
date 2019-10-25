@@ -4,8 +4,9 @@ import Input from '../../components/Input'
 import Axios from 'axios'
 import Button from '../../components/Button'
 
-import { setSelected } from '../../actions';
-import {play, pause, stop} from '../../assets/images'
+import {setSelected} from '../../actions';
+import {store} from 'react-notifications-component';
+import {play, pause, stop} from '../../assets/images';
 
 class AdminManageGame extends React.Component {
     constructor(props) {
@@ -17,7 +18,8 @@ class AdminManageGame extends React.Component {
             errorGroupName: undefined,
             errorGroupPassword: undefined,
             newGroupName: '',
-            newGroupPassword: ''
+            newGroupPassword: '',
+            eliminated: false
         }
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -27,15 +29,15 @@ class AdminManageGame extends React.Component {
     async componentDidMount() {
         const {data} = await Axios.post(API_URL, {
             query: `{
-        users {
-          uuid
-          username 
-        }
-      }
-      `
+                        users {
+                          uuid
+                          username 
+                        }
+                    }`
         })
         this.setState({users: data.data.users})
     }
+
     toggleModal() {
         this.setState((prev, props) => {
             const newState = !prev.modalState;
@@ -43,6 +45,7 @@ class AdminManageGame extends React.Component {
             return {modalState: newState};
         });
     }
+
     onRegister = async () => {
         const {newGroupName, newGroupPassword} = this.state;
         const that = this;
@@ -58,34 +61,104 @@ class AdminManageGame extends React.Component {
                 errorGroupPassword: 'Debes registrar una contraseña'
             })
         }
-        await Axios.post(API_URL, {
+        const { data } = await Axios.post(API_URL, {
             query: `mutation{
                         createUser(username: "${newGroupName}" password: "${newGroupPassword}") {
                             username
                             uuid
                         }
                     }`
-        })
-            .then(rep => {
-                if(rep.status === 200){
-                    if (rep.data.errors) {
-                        const key = 'errorGroupName';
-                        const err = 'El nombre ingresado ya existe';
-                        return this.setState({
-                            [key]: err
-                        })
-                    } else {
-                        setTimeout(() => {
-                            window.location.reload();
-                            this.toggleModal();
-                        }, 250);
-                        that.setState({ newGroupName: '', newGroupPassword: '' });
-                    }
-                }
+        });
+        if (data.errors) {
+            const key = 'errorGroupName';
+            const err = 'El nombre ingresado ya existe';
+            return this.setState({
+                [key]: err
             })
-            .catch(er => console.log('this is the err, ', er));
+        } else {
+            const {data} = await Axios.post(API_URL, {
+                query: `{
+                        users {
+                          uuid
+                          username 
+                        }
+                    }`
+            });
+            this.setState({users: data.data.users, newGroupName: '', newGroupPassword: ''}, () => {
+                this.toggleModal();
+                return store.addNotification({
+                    title: "Éxito",
+                    message: `El grupo se creó correctamente`,
+                    type: "success",
+                    insert: "top",
+                    container: "top-right",
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
+            });
+        }
     }
-    onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+    onEliminate = async (uuid) => {
+        const {data} = await Axios.post(API_URL, {
+            query: `mutation{
+                      deleteUser(uuid: "${uuid}"){
+                        success
+                      }
+                    }`
+        });
+        if (data.errors) {
+            return store.addNotification({
+                title: "Error",
+                message: `El grupo no se eliminó correctamente`,
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 5000,
+                    onScreen: true
+                }
+            });
+        } else {
+            this.setState({ eliminated: true });
+            const {data} = await Axios.post(API_URL, {
+                query: `{
+                        users {
+                          uuid
+                          username 
+                        }
+                    }`
+            });
+            this.setState({users: data.data.users, eliminated: false}, () => {
+                return store.addNotification({
+                    title: "Éxito",
+                    message: `El grupo se eliminó correctamente`,
+                    type: "success",
+                    insert: "top",
+                    container: "top-right",
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
+            });
+        }
+    };
+    onAskEliminate = (user) => {
+        let prompt = confirm(`Deseas eliminar a ${String(user.username)}`);
+        if (prompt) {
+            this.onEliminate(user.uuid);
+        }
+    };
+
+    onChange = (e) => this.setState({[e.target.name]: e.target.value});
 
     render() {
         const {
@@ -156,7 +229,7 @@ class AdminManageGame extends React.Component {
                 <div className="menu-footer">
                     <div
                         className="btn"
-                        style={{ backgroundColor: (this.props.selected === 1) ? '#25146b' : null }}
+                        style={{backgroundColor: (this.props.selected === 1) ? '#25146b' : null}}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -171,7 +244,7 @@ class AdminManageGame extends React.Component {
                     </div>
                     <div
                         className="btn"
-                        style={{ backgroundColor: (this.props.selected === 2) ? '#25146b' : null }}
+                        style={{backgroundColor: (this.props.selected === 2) ? '#25146b' : null}}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -187,7 +260,7 @@ class AdminManageGame extends React.Component {
                     </div>
                     <div
                         className="btn"
-                        style={{ backgroundColor: (this.props.selected === 3) ? '#25146b' : null }}
+                        style={{backgroundColor: (this.props.selected === 3) ? '#25146b' : null}}
                         onClick={() => {
                             Axios.post(API_URL, {
                                 query: `mutation{
@@ -297,13 +370,6 @@ class AdminManageGame extends React.Component {
                 <br/>
                 <div
                     style={{
-                        /*display: 'flex',
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-around',
-                        overFlowX: 'auto',
-                        overflowY: 'hidden',
-                        maxHeight: '80%'*/
                         height: '70vh',
                         margin: '2rem',
                         display: 'grid',
@@ -320,9 +386,11 @@ class AdminManageGame extends React.Component {
                                 editable="false"
                                 onChange={e => this.setState({})}
                                 extra={<Button
-                                    disabled={this.props.status !== 'UNSTARTED'}
+                                    isLoading={this.state.eliminated}
+                                    disabled={this.state.eliminated}
                                     text="Eliminar"
                                     className="is-danger  is-input-addon"
+                                    onClick={() => this.onAskEliminate(user)}
                                 />}
                             />
                         </div>
@@ -330,12 +398,12 @@ class AdminManageGame extends React.Component {
                 </div>
 
                 <div id="add">
-                  <Button
-                      className="is-success"
-                      style={{ width: '100%' }}
-                      text="Agregar participante"
-                      onClick={this.toggleModal}
-                  />
+                    <Button
+                        className="is-success"
+                        style={{width: '100%'}}
+                        text="Agregar participante"
+                        onClick={this.toggleModal}
+                    />
                 </div>
             </section>
 
@@ -415,4 +483,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, { setSelected })(AdminManageGame)
+export default connect(mapStateToProps, {setSelected})(AdminManageGame)

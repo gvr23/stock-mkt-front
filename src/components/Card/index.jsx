@@ -87,12 +87,12 @@ const Card = (props) => {
                     {/* </div> */}
                 </div>
                 <div className="right">
-                    <Button
+                    {/*<Button
                         title="gráfico"
                         text={<Icon name="chart-line fa-1x" />}
                         className="is-primary is-medium"
                         style={{ marginBottom: 5, width: 30, height: 30 }}
-                    />
+                    />*/}
                     <Button
                         title="compra"
                         text={<Icon name="fas fa-shopping-bag fa-1x" />}
