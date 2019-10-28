@@ -21,12 +21,16 @@ class AdminManageGame extends React.Component {
             newGroupPassword: '',
             eliminated: false,
             deleteModal: false,
+            resetModal: false,
+            resetError: '',
+            loadingData: false,
             userToDelete: null
         }
 
         this.toggleModal = this.toggleModal.bind(this);
         this.onRegister = this.onRegister.bind(this);
         this.onEliminate = this.onEliminate.bind(this);
+        this.onReset = this.onReset.bind(this);
     }
 
     async componentDidMount() {
@@ -63,7 +67,7 @@ class AdminManageGame extends React.Component {
                 errorGroupPassword: 'Debes registrar una contraseña'
             })
         }
-        const { data } = await Axios.post(API_URL, {
+        const {data} = await Axios.post(API_URL, {
             query: `mutation{
                         createUser(username: "${newGroupName}" password: "${newGroupPassword}") {
                             username
@@ -113,7 +117,7 @@ class AdminManageGame extends React.Component {
                     }`
         });
         if (data.errors) {
-            this.setState({ deleteModal: false, userToDelete: null });
+            this.setState({deleteModal: false, userToDelete: null});
             return store.addNotification({
                 title: "Error",
                 message: `El grupo no se eliminó correctamente`,
@@ -128,7 +132,7 @@ class AdminManageGame extends React.Component {
                 }
             });
         } else {
-            this.setState({ eliminated: true, deleteModal: false, userToDelete: null });
+            this.setState({eliminated: true, deleteModal: false, userToDelete: null});
             const {data} = await Axios.post(API_URL, {
                 query: `{
                         users {
@@ -159,12 +163,13 @@ class AdminManageGame extends React.Component {
         if (prompt) {
             this.onEliminate(user.uuid);
         }*/
-        if(this.state.userToDelete){
+        if (this.state.userToDelete) {
             return (
-                <div className="columns" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className="columns" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <div className="column is-8">
                         <div className="message is-warning">
-                            <div className="message-header" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div className="message-header"
+                                 style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                 <p>{`¿Deseas eliminar a ${String(this.state.userToDelete.username)}?`}</p>
                             </div>
                         </div>
@@ -177,6 +182,84 @@ class AdminManageGame extends React.Component {
     };
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value});
+    onAskReset = () => {
+        if (this.state.resetModal) {
+            return (
+                <div className="columns" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <div className="column is-8">
+                        <label className="label" style={{color: '#5D4E75'}}>Contraseña</label>
+                        <Input
+                            style={{borderWidth: 1, borderColor: '#371E9E'}}
+                            error={this.state.resetError}
+                            placeholder="ingrese contraseña"
+                            name="adminPassword"
+                            onChange={this.onChange}
+                        />
+                    </div>
+                </div>
+            )
+        }
+    }
+    onReset = async () => {
+        const {data} = await Axios.post(API_URL, {
+            query: `{
+        login(username: "${this.props.username}", password: "${this.state.adminPassword}") {
+          uuid
+          username
+          admin
+          balance
+          params{
+            comission
+            exchangeRate
+            status
+          }
+        }
+      }`
+        });
+        if (data.errors) {
+            return this.setState({ resetError: 'La contraseña ingresada es incorrecta' });
+        } else {
+            const { data } = await Axios.post(API_URL, {
+                query: `mutation{
+                      resetValues{
+                        success
+                      }
+                    }`
+            });
+            this.setState({ resetModal: false, adminPassword: '' }, () => {
+                if (data.errors){
+                    return store.addNotification({
+                        title: "Oops",
+                        message: `El juego no se reinició correctamente`,
+                        type: "danger",
+                        insert: "top",
+                        container: "top-right",
+                        animationIn: ["animated", "fadeIn"],
+                        animationOut: ["animated", "fadeOut"],
+                        dismiss: {
+                            duration: 5000,
+                            onScreen: true
+                        }
+                    });
+                } else {
+                    this.props.setSelected(0);
+                    return store.addNotification({
+                        title: "Éxito",
+                        message: `El juego se reinició correctamente`,
+                        type: "success",
+                        insert: "top",
+                        container: "top-right",
+                        animationIn: ["animated", "fadeIn"],
+                        animationOut: ["animated", "fadeOut"],
+                        dismiss: {
+                            duration: 5000,
+                            onScreen: true
+                        }
+                    });
+                }
+            })
+        }
+    }
 
     render() {
         const {
@@ -241,6 +324,11 @@ class AdminManageGame extends React.Component {
                                     }}
                                 />}
                             />
+                        </li>
+                        <li>
+                            <button className="button is-info is-fullwidth"
+                                    onClick={() => this.setState({resetModal: true})}>Reiniciar
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -409,7 +497,7 @@ class AdminManageGame extends React.Component {
                                     text="Eliminar"
                                     className="is-danger  is-input-addon"
                                     onClick={() => {
-                                        this.setState({ userToDelete: user, deleteModal: true });
+                                        this.setState({userToDelete: user, deleteModal: true});
                                     }}
                                 />}
                             />
@@ -460,12 +548,20 @@ class AdminManageGame extends React.Component {
             </Modal>
 
             <Modal
-                closeModal={() => this.setState({ deleteModal: false, userToDelete: null })}
+                closeModal={() => this.setState({deleteModal: false, userToDelete: null})}
                 modalState={this.state.deleteModal}
                 onPress={this.onEliminate}
                 title="Eliminar Usuario"
             >
                 {this.onAskEliminate()}
+            </Modal>
+            <Modal
+                closeModal={() => this.setState({resetModal: false})}
+                modalState={this.state.resetModal}
+                onPress={this.onReset}
+                title="Reinciar Juego"
+            >
+                {this.onAskReset()}
             </Modal>
         </div>
     }
@@ -508,7 +604,8 @@ const mapStateToProps = state => {
         comission: state.app.comission,
         exchangeRate: state.app.exchangeRate,
         status: state.app.status,
-        selected: state.app.selected
+        selected: state.app.selected,
+        username: state.app.username
     }
 }
 

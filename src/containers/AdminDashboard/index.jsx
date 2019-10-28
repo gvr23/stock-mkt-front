@@ -106,7 +106,7 @@ class AdminDashboard extends React.Component {
                                 <td className="is-size-4">{item.companyname}</td>
                                 <td className="is-size-4">{item.currency}</td>
                                 <td className="is-size-4">{parseFloat(item.price).toFixed(2)}</td>
-                                <td className="is-size-4">{item.changePercent}</td>
+                                <td className="is-size-4">{item.change}</td>
                                 <td className="is-size-4">
                                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                                         <Icon
