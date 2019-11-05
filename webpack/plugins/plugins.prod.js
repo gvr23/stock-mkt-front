@@ -16,8 +16,8 @@ new MiniCssExtractPlugin({
 new WebpackBar(),
 new DefinePlugin({
     'IS_DEV': JSON.stringify("false"),
-    'API_URL': JSON.stringify("http://stockmkt.back.ngrok.io/graph"),
-    'SOCKET_URL': JSON.stringify("http://stockmkt.socket.ngrok.io")
+    'API_URL': JSON.stringify("http://localhost:5015/graph"),
+    'SOCKET_URL': JSON.stringify("http://localhost:5020")
 }),
 new CompressionPlugin({
     // asset: '[path].gz[query]',
