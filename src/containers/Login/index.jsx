@@ -6,6 +6,7 @@ import {
 } from '../../actions'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
+import { carrera } from '../../assets/images';
 
 
 class Login extends React.Component {
@@ -215,6 +216,10 @@ class Login extends React.Component {
                         />
                     </div>
                 </Modal>*/}
+
+                <figure className="image" style={{ position: 'absolute', bottom: 25, left: 25 }}>
+                    <img src={carrera} style={{ height: 70, width: 300 }} />
+                </figure>
             </div>
         )
     }
